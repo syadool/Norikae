@@ -1,28 +1,30 @@
 {
   "meta": { "asOf": "2026-09-26T23:30:00+09:00", "partialResult": true, "isStale": true, "sources": ["gtfs"], "attributions": [] },
-  "data": [
-    {
-      "id": "last",
-      "departureTime": "2026-09-26T23:52:00+09:00",
-      "arrivalTime": "2026-09-27T00:31:00+09:00",
-      "durationMinutes": 39,
-      "transferCount": 0,
-      "fare": { "fareType": "unavailable" },
-      "legs": [
-        {
-          "type": "train",
-          "lineId": "jp.line.jr-east.shonan-shinjuku",
-          "trainTypeId": "jp.train-type.local",
-          "destinationName": "逗子行",
-          "from": { "stationId": "jp.station.ikebukuro", "scheduledTime": "2026-09-26T23:52:00+09:00", "serviceDate": "2026-09-26" },
-          "to": { "stationId": "jp.station.yokohama", "scheduledTime": "2026-09-27T00:31:00+09:00", "serviceDate": "2026-09-26" },
-          "stopCount": 6
-        }
-      ],
-      "hasServiceDisruption": false,
-      "availability": "stale",
-      "warnings": [{ "code": "STALE_DATA", "message": "運行情報が古い可能性があります" }],
-      "routeContext": "opaque-3"
-    }
-  ]
+  "data": {
+    "routes": [
+      {
+        "id": "last",
+        "departureTime": "2026-09-26T23:52:00+09:00",
+        "arrivalTime": "2026-09-27T00:31:00+09:00",
+        "durationMinutes": 39,
+        "transferCount": 0,
+        "fare": { "fareType": "unavailable" },
+        "legs": [
+          {
+            "type": "train",
+            "lineId": "jp.line.jr-east.shonan-shinjuku",
+            "trainTypeId": "jp.train-type.local",
+            "destinationName": "逗子行",
+            "from": { "stationId": "jp.station.ikebukuro", "scheduledTime": "2026-09-26T23:52:00+09:00", "serviceDate": "2026-09-26" },
+            "to": { "stationId": "jp.station.yokohama", "scheduledTime": "2026-09-27T00:31:00+09:00", "serviceDate": "2026-09-26" },
+            "stopCount": 6
+          }
+        ],
+        "hasServiceDisruption": false,
+        "availability": "stale",
+        "warnings": [{ "code": "STALE_DATA", "message": "運行情報が古い可能性があります" }],
+        "routeContext": "opaque-3"
+      }
+    ]
+  }
 }
