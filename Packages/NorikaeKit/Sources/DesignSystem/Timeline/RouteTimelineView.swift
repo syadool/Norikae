@@ -300,6 +300,8 @@ struct TimelineRideRow: View {
                 // チップを上に置き、路線名と種別を 1 つの文として折り返す
                 LineSymbolChip(appearance, size: .detail)
                 lineTitle(type)
+                    // 1 行分の高さで測られて「…」で切れることがあるので、折り返した高さを使う
+                    .fixedSize(horizontal: false, vertical: true)
             } else {
                 HStack(spacing: 6) {
                     LineSymbolChip(appearance, size: .detail)
