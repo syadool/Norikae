@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>経路詳細</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F3EF;font-family:'Noto Sans JP',sans-serif;color:#15171C}
+a{color:#1747A6}a:hover{color:#10357F}
+button{font-family:inherit;cursor:pointer}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #F4F3EF; font-family: 'Noto Sans JP', sans-serif; color: #15171C;">
+
+<header style="position: absolute; top: 48px; left: 0; width: 390px; height: 48px; box-sizing: border-box; padding: 0 6px; display: flex; align-items: center; justify-content: space-between;">
+<a href="Main.dc.html" style="height: 44px; padding-right: 8px; display: flex; align-items: center; gap: 0; color: #1747A6; text-decoration: none; font-size: 16px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>結果</a>
+<div style="font-size: 16px; font-weight: 700;">経路詳細</div>
+<div style="display: flex;">
+<button aria-label="お気に入りに登録" style="width: 44px; height: 44px; padding: 0; border: none; background: transparent; color: #1747A6; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.8 6.2.9-4.5 4.4 1 6.3L12 17.5 6.5 20.4l1-6.3L3 9.7l6.2-.9z"></path></svg></button>
+<button aria-label="共有" style="width: 44px; height: 44px; padding: 0; border: none; background: transparent; color: #1747A6; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"></path><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"></path></svg></button>
+</div>
+</header>
+
+<section style="position: absolute; top: 100px; left: 16px; width: 358px; box-sizing: border-box; padding: 14px 16px 16px; background: #FFFFFF; border-radius: 16px; display: flex; flex-direction: column; gap: 6px;">
+<div style="display: flex; align-items: center; justify-content: space-between;">
+<span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 5px; background: #FCEBC8; color: #7A4B00; font-size: 12px; font-weight: 700;">安</span>
+<span style="font-size: 12px; color: #6B7079;">9月26日(土) · IC運賃</span>
+</div>
+<div style="display: flex; align-items: baseline; gap: 8px; font-family: Barlow, 'Noto Sans JP', sans-serif; font-variant-numeric: tabular-nums;">
+<span style="font-size: 32px; font-weight: 700; line-height: 38px;">8:10</span>
+<span style="font-size: 20px; color: #8A8F98;">→</span>
+<span style="font-size: 32px; font-weight: 700; line-height: 38px;">8:52</span>
+</div>
+<div style="display: flex; gap: 14px; font-size: 14px;">
+<span><span style="font-weight: 700;">42分</span></span>
+<span style="color: #4A4F59;">乗換 <span style="font-weight: 700; color: #15171C;">1回</span></span>
+<span style="color: #4A4F59;">運賃 <span style="font-weight: 700; color: #15171C;">¥684</span></span>
+</div>
+<div style="display: flex; gap: 8px; margin-top: 6px;">
+<button style="flex-grow: 1; flex-basis: 0; height: 44px; border: 1px solid #DCD9D0; border-radius: 12px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 14px; font-weight: 500; color: #15171C;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>1本前</button>
+<button style="flex-grow: 1; flex-basis: 0; height: 44px; border: 1px solid #DCD9D0; border-radius: 12px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 14px; font-weight: 500; color: #15171C;">1本後<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+</div>
+</section>
+
+<section aria-label="縦タイムライン" style="position: absolute; top: 290px; left: 16px; width: 358px; box-sizing: border-box; padding: 12px 0; background: #FFFFFF; border-radius: 16px; display: flex; flex-direction: column;">
+
+<div style="display: flex; height: 40px;">
+<div style="width: 60px; box-sizing: border-box; padding-left: 14px; display: flex; align-items: center; gap: 3px; font-family: Barlow, 'Noto Sans JP', sans-serif; font-variant-numeric: tabular-nums;"><span style="font-size: 17px; font-weight: 700;">8:10</span><span style="font-size: 11px; color: #6B7079;">発</span></div>
+<div style="position: relative; width: 26px; flex-shrink: 0;">
+<div style="position: absolute; top: 20px; left: 10px; width: 6px; height: 20px; background: #9C5E31;"></div>
+<div style="position: absolute; top: 13px; left: 6px; width: 14px; height: 14px; box-sizing: border-box; border: 3px solid #9C5E31; border-radius: 50%; background: #FFFFFF;"></div>
+</div>
+<div style="flex-grow: 1; padding-left: 8px; display: flex; align-items: center; gap: 8px;"><span style="font-size: 17px; font-weight: 700;">池袋</span><span style="height: 20px; padding: 0 6px; border-radius: 4px; background: #F1F0EB; font-size: 12px; font-weight: 700; line-height: 20px; color: #4A4F59;">3番線</span></div>
+</div>
+
+<div style="display: flex; height: 128px;">
+<div style="width: 60px;"></div>
+<div style="position: relative; width: 26px; flex-shrink: 0;"><div style="position: absolute; top: 0; left: 10px; width: 6px; height: 128px; background: #9C5E31;"></div></div>
+<div style="flex-grow: 1; box-sizing: border-box; padding: 6px 14px 6px 8px; display: flex; flex-direction: column; gap: 4px;">
+<div style="display: flex; align-items: center; gap: 6px;"><span style="display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 20px; padding: 0 3px; box-sizing: border-box; background: #FFFFFF; border: 2px solid #9C5E31; border-radius: 5px; font-family: Barlow, sans-serif; font-size: 11px; font-weight: 700;">F</span><span style="font-size: 14px; font-weight: 700;">副都心線</span><span style="font-size: 13px; font-weight: 700; color: #B42318;">急行</span></div>
+<div style="font-size: 13px; color: #4A4F59;">元町・中華街行</div>
+<button style="align-self: flex-start; height: 24px; padding: 0; border: none; background: transparent; display: flex; align-items: center; gap: 2px; font-size: 13px; color: #1747A6;">途中 4駅に停車<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+<div style="margin-top: 2px; padding: 8px 10px; border-radius: 10px; background: #F6F5F1; display: flex; flex-direction: column; gap: 6px;">
+<div style="display: flex; gap: 2px;">
+<span style="width: 18px; height: 10px; border-radius: 2px; background: #E1DED5;"></span><span style="width: 18px; height: 10px; border-radius: 2px; background: #E1DED5;"></span><span style="width: 18px; height: 10px; border-radius: 2px; background: #E1DED5;"></span><span style="width: 18px; height: 10px; border-radius: 2px; background: #E1DED5;"></span><span style="width: 18px; height: 10px; border-radius: 2px; background: #E1DED5;"></span><span style="width: 18px; height: 10px; border-radius: 2px; background: #E1DED5;"></span><span style="width: 18px; height: 10px; border-radius: 2px; background: #E1DED5;"></span><span style="width: 18px; height: 10px; border-radius: 2px; background: #9C5E31;"></span><span style="width: 18px; height: 10px; border-radius: 2px; background: #E1DED5;"></span><span style="width: 18px; height: 10px; border-radius: 2px; background: #E1DED5;"></span>
+</div>
+<div style="font-size: 12px; color: #15171C;"><span style="font-weight: 700;">8号車</span> · 渋谷での乗換に便利</div>
+</div>
+</div>
+</div>
+
+<div style="display: flex; height: 40px;">
+<div style="width: 60px; box-sizing: border-box; padding-left: 14px; display: flex; align-items: center; gap: 3px; font-family: Barlow, 'Noto Sans JP', sans-serif; font-variant-numeric: tabular-nums;"><span style="font-size: 17px; font-weight: 700;">8:21</span><span style="font-size: 11px; color: #6B7079;">着</span></div>
+<div style="position: relative; width: 26px; flex-shrink: 0;">
+<div style="position: absolute; top: 0; left: 10px; width: 6px; height: 20px; background: #9C5E31;"></div>
+<div style="position: absolute; top: 13px; left: 6px; width: 14px; height: 14px; box-sizing: border-box; border: 3px solid #9C5E31; border-radius: 50%; background: #FFFFFF;"></div>
+</div>
+<div style="flex-grow: 1; padding-left: 8px; display: flex; align-items: center; gap: 8px;"><span style="font-size: 17px; font-weight: 700;">渋谷</span><span style="height: 20px; padding: 0 6px; border-radius: 4px; background: #F1F0EB; font-size: 12px; font-weight: 700; line-height: 20px; color: #4A4F59;">5番線</span></div>
+</div>
+
+<div style="display: flex; height: 44px;">
+<div style="width: 60px;"></div>
+<div style="position: relative; width: 26px; flex-shrink: 0;"><div style="position: absolute; top: 2px; left: 12px; width: 0; height: 40px; border-left: 2px dashed #8A8F98;"></div></div>
+<div style="flex-grow: 1; box-sizing: border-box; padding: 0 6px 0 8px; display: flex; align-items: center; justify-content: space-between;">
+<div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #4A4F59;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="1.8"></circle><path d="M9 21l2-6 3 3v3M11 15l-1-5 4-1 2 4 3 1M10 10l-3 2v3"></path></svg><span><span style="font-weight: 700; color: #15171C;">乗換 4分</span>（徒歩 約2分）</span></div>
+<button style="height: 44px; padding: 0 8px; border: none; background: transparent; font-size: 13px; color: #1747A6;">駅の地図</button>
+</div>
+</div>
+
+<div style="display: flex; height: 40px;">
+<div style="width: 60px; box-sizing: border-box; padding-left: 14px; display: flex; align-items: center; gap: 3px; font-family: Barlow, 'Noto Sans JP', sans-serif; font-variant-numeric: tabular-nums;"><span style="font-size: 17px; font-weight: 700;">8:25</span><span style="font-size: 11px; color: #6B7079;">発</span></div>
+<div style="position: relative; width: 26px; flex-shrink: 0;">
+<div style="position: absolute; top: 20px; left: 10px; width: 6px; height: 20px; background: #DA0442;"></div>
+<div style="position: absolute; top: 13px; left: 6px; width: 14px; height: 14px; box-sizing: border-box; border: 3px solid #DA0442; border-radius: 50%; background: #FFFFFF;"></div>
+</div>
+<div style="flex-grow: 1; padding-left: 8px; display: flex; align-items: center; gap: 8px;"><span style="font-size: 17px; font-weight: 700;">渋谷</span><span style="height: 20px; padding: 0 6px; border-radius: 4px; background: #F1F0EB; font-size: 12px; font-weight: 700; line-height: 20px; color: #4A4F59;">4番線</span></div>
+</div>
+
+<div style="display: flex; height: 84px;">
+<div style="width: 60px;"></div>
+<div style="position: relative; width: 26px; flex-shrink: 0;"><div style="position: absolute; top: 0; left: 10px; width: 6px; height: 84px; background: #DA0442;"></div></div>
+<div style="flex-grow: 1; box-sizing: border-box; padding: 6px 14px 6px 8px; display: flex; flex-direction: column; gap: 4px;">
+<div style="display: flex; align-items: center; gap: 6px;"><span style="display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 20px; padding: 0 3px; box-sizing: border-box; background: #FFFFFF; border: 2px solid #DA0442; border-radius: 5px; font-family: Barlow, sans-serif; font-size: 11px; font-weight: 700;">TY</span><span style="font-size: 14px; font-weight: 700;">東横線</span><span style="font-size: 13px; font-weight: 700; color: #B42318;">特急</span></div>
+<div style="font-size: 13px; color: #4A4F59;">元町・中華街行</div>
+<button style="align-self: flex-start; height: 24px; padding: 0; border: none; background: transparent; display: flex; align-items: center; gap: 2px; font-size: 13px; color: #1747A6;">途中 4駅に停車<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+</div>
+</div>
+
+<div style="display: flex; height: 40px;">
+<div style="width: 60px; box-sizing: border-box; padding-left: 14px; display: flex; align-items: center; gap: 3px; font-family: Barlow, 'Noto Sans JP', sans-serif; font-variant-numeric: tabular-nums;"><span style="font-size: 17px; font-weight: 700;">8:52</span><span style="font-size: 11px; color: #6B7079;">着</span></div>
+<div style="position: relative; width: 26px; flex-shrink: 0;">
+<div style="position: absolute; top: 0; left: 10px; width: 6px; height: 20px; background: #DA0442;"></div>
+<div style="position: absolute; top: 12px; left: 5px; width: 16px; height: 16px; border-radius: 50%; background: #DA0442;"></div>
+</div>
+<div style="flex-grow: 1; padding-left: 8px; display: flex; align-items: center; gap: 8px;"><span style="font-size: 17px; font-weight: 700;">横浜</span><span style="height: 20px; padding: 0 6px; border-radius: 4px; background: #F1F0EB; font-size: 12px; font-weight: 700; line-height: 20px; color: #4A4F59;">2番線</span></div>
+</div>
+</section>
+
+<div style="position: absolute; left: 0; bottom: 0; width: 390px; height: 104px; box-sizing: border-box; padding: 12px 16px 0; background: #F4F3EF; border-top: 1px solid #E3E1DA;">
+<a href="LiveActivity.dc.html" style="width: 358px; height: 54px; border-radius: 14px; background: #1747A6; color: #FFFFFF; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; font-weight: 700; text-decoration: none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8z"></path></svg>この経路で案内開始</a>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Detail.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "経路詳細（縦タイムライン）",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "LiveActivity.dc.html": {
+      "h": 844,
+      "title": "Live Activity / Dynamic Island / Watch",
+      "w": 880,
+      "x": 1410,
+      "y": 0
+    },
+    "Main.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "縦比較（検索結果）",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "Search.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "経路検索",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "Status.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "運行情報",
+      "w": 390,
+      "x": 2370,
+      "y": 0
+    },
+    "SearchDark.dc.html": {
+      "x": 0,
+      "y": 1144,
+      "w": 390,
+      "h": 844,
+      "title": "経路検索（ダーク）",
+      "is_interactive": true
+    },
+    "MainDark.dc.html": {
+      "x": 470,
+      "y": 1144,
+      "w": 390,
+      "h": 844,
+      "title": "縦比較（ダーク）",
+      "is_interactive": true
+    },
+    "DetailDark.dc.html": {
+      "x": 940,
+      "y": 1144,
+      "w": 390,
+      "h": 844,
+      "title": "経路詳細（ダーク）",
+      "is_interactive": true
+    },
+    "StatusDark.dc.html": {
+      "x": 2370,
+      "y": 1144,
+      "w": 390,
+      "h": 844,
+      "title": "運行情報（ダーク）",
+      "is_interactive": true
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-09-26T10:25:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "heading": {
+      "kind": "title1",
+      "maxW": 2760,
+      "text": "Norikae デザインモック（首都圏・サンプルデータ）",
+      "w": 240,
+      "x": 0,
+      "y": -260
+    },
+    "darkHeading": {
+      "x": 0,
+      "y": 884,
+      "text": "ダークモード",
+      "kind": "title1",
+      "maxW": 2760
+    },
+    "darkLA": {
+      "x": 1410,
+      "y": 1144,
+      "w": 360,
+      "text": "Live Activity / Dynamic Island / Watch は、システム側でもともと暗い面に表示されるため、ダーク版は上段と共通。",
+      "color": "gray"
+    }
+  },
+  "order": [
+    "Search.dc.html",
+    "Main.dc.html",
+    "Detail.dc.html",
+    "LiveActivity.dc.html",
+    "Status.dc.html",
+    "SearchDark.dc.html",
+    "MainDark.dc.html",
+    "DetailDark.dc.html",
+    "StatusDark.dc.html"
+  ],
+  "pages": [],
+  "title": "Norikae デザインモック"
+}
