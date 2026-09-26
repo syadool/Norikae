@@ -194,6 +194,8 @@ public struct ErrorStateView: View {
                 .font(.subheadline)
                 .foregroundStyle(NKColor.textPrimary)
                 .multilineTextAlignment(.center)
+                // 大きい文字サイズで 1 行分の高さで測られて「…」で切れないよう、折り返した高さを使う
+                .fixedSize(horizontal: false, vertical: true)
             if retryable {
                 Button {
                     retry()
