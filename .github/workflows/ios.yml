@@ -1,10 +1,29 @@
 # ビルドとテスト（frontend.md 12.2）
+#
+# スナップショットは記録した環境と同じ Xcode・シミュレーターでしか比較できない。
+# XCODE・DESTINATION を変えたら、参照画像（__Snapshots__）を記録し直す。
 name: iOS
 
 on:
   push:
     branches: [main]
+    paths:
+      - App/**
+      - NorikaeWidget/**
+      - Shared/**
+      - NorikaeUITests/**
+      - Packages/**
+      - project.yml
+      - .github/workflows/ios.yml
   pull_request:
+    paths:
+      - App/**
+      - NorikaeWidget/**
+      - Shared/**
+      - NorikaeUITests/**
+      - Packages/**
+      - project.yml
+      - .github/workflows/ios.yml
 
 concurrency:
   group: ios-${{ github.ref }}
@@ -15,12 +34,18 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 45
     env:
-      DESTINATION: platform=iOS Simulator,name=iPhone 16,OS=latest
+      XCODE: "16.4"
+      # OS=latest にすると、ランナーのイメージが更新されるたびに OS が変わる（2026-09 時点では iOS 26.2 が選ばれていた）
+      DESTINATION: platform=iOS Simulator,name=iPhone 16,OS=18.5
+      RESULTS: ${{ github.workspace }}/build/results
+      SNAPSHOT_DIR: Packages/NorikaeKit/Tests/SnapshotTests/__Snapshots__
     steps:
       - uses: actions/checkout@v4
 
       - name: Xcode を選ぶ
-        run: sudo xcode-select -s /Applications/Xcode_16.4.app || sudo xcode-select -s /Applications/Xcode.app
+        run: |
+          sudo xcode-select -s "/Applications/Xcode_${XCODE}.app"
+          xcodebuild -version
 
       - name: パッケージのテスト（Domain・Data・Feature・スナップショット）
         working-directory: Packages/NorikaeKit
@@ -29,8 +54,9 @@ jobs:
           xcodebuild test \
             -scheme NorikaeKit-Package \
             -destination "$DESTINATION" \
+            -resultBundlePath "$RESULTS/NorikaeKit.xcresult" \
             -skipMacroValidation \
-            | xcbeautify || exit 1
+            | xcbeautify
 
       - name: Xcode プロジェクトを作る
         run: |
@@ -44,6 +70,39 @@ jobs:
             -project Norikae.xcodeproj \
             -scheme Norikae \
             -destination "$DESTINATION" \
+            -resultBundlePath "$RESULTS/Norikae.xcresult" \
             CODE_SIGNING_ALLOWED=NO \
             -skipMacroValidation \
-            | xcbeautify || exit 1
+            | xcbeautify
+
+      # xcbeautify は失敗の詳細やクラッシュの出力を落とすので、xcresult から書き出す
+      - name: 失敗したテストの詳細
+        if: failure()
+        run: |
+          for bundle in "$RESULTS"/*.xcresult; do
+            [ -d "$bundle" ] || continue
+            echo "::group::$(basename "$bundle")：失敗したテスト"
+            xcrun xcresulttool get test-results summary --path "$bundle" \
+              | jq -r '.testFailures[]? | "\(.targetName) \(.testIdentifierString)\n  \(.failureText)\n"' || true
+            echo "::endgroup::"
+            echo "::group::$(basename "$bundle")：コンソール出力"
+            xcrun xcresulttool get log --type console --path "$bundle" | tail -c 100000 || true
+            echo "::endgroup::"
+          done
+
+      - name: テスト結果を保存する
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcresult
+          path: build/results/
+          if-no-files-found: ignore
+
+      # 参照画像がないスナップショットテストは、その場で画像を記録して失敗する。記録した画像を取り出せるようにする
+      - name: 記録したスナップショットを保存する
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: snapshots
+          path: ${{ env.SNAPSHOT_DIR }}
+          if-no-files-found: ignore
