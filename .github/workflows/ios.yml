@@ -89,6 +89,13 @@ jobs:
             xcrun xcresulttool get log --type console --path "$bundle" | tail -c 100000 || true
             echo "::endgroup::"
           done
+          # テストのプロセスがクラッシュしたときは、シミュレーターのクラッシュレポートがホストに残る
+          for report in $(find ~/Library/Logs/DiagnosticReports -name '*.ips' -mmin -60 2>/dev/null | head -n 5); do
+            echo "::group::クラッシュレポート：$(basename "$report")"
+            head -c 20000 "$report"
+            echo
+            echo "::endgroup::"
+          done
 
       - name: テスト結果を保存する
         if: failure()
