@@ -1,0 +1,23 @@
+{
+  "lines": [
+    {
+      "lineId": "jp.line.tokyo-metro.ginza",
+      "features": {
+        "routeSearch": "available",
+        "timetable": "available",
+        "fare": "partial",
+        "operationAlerts": "available",
+        "tripUpdates": "unavailable",
+        "vehiclePositions": "unavailable",
+        "platform": "partial",
+        "boardingPosition": "unavailable",
+        "stopList": "available",
+        "futureFeature": "something-new"
+      },
+      "asOf": "2026-09-26T08:14:00+09:00"
+    }
+  ],
+  "regions": [
+    { "region": "kansai", "features": { "viaStations": "unavailable", "firstLastTrain": "unavailable" } }
+  ]
+}

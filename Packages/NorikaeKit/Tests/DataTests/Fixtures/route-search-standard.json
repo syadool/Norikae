@@ -1,0 +1,154 @@
+{
+  "meta": {
+    "asOf": "2026-09-26T08:04:00+09:00",
+    "partialResult": false,
+    "isStale": false,
+    "sources": [
+      "google-routes"
+    ],
+    "attributions": [
+      {
+        "provider": "example",
+        "displayText": "データ提供: Example",
+        "licenseUrl": "https://example.com/license"
+      }
+    ]
+  },
+  "data": [
+    {
+      "id": "r1",
+      "departureTime": "2026-09-26T08:10:00+09:00",
+      "arrivalTime": "2026-09-26T08:52:00+09:00",
+      "durationMinutes": 42,
+      "transferCount": 1,
+      "fare": {
+        "fareType": "exact",
+        "icTotal": 684,
+        "ticketTotal": 690
+      },
+      "legs": [
+        {
+          "type": "train",
+          "lineId": "jp.line.tokyo-metro.fukutoshin",
+          "trainTypeId": "jp.train-type.express",
+          "trainRunId": "run-f-0810",
+          "destinationName": "元町・中華街行",
+          "from": {
+            "stationId": "jp.station.ikebukuro",
+            "scheduledTime": "2026-09-26T08:10:00+09:00",
+            "platform": "3",
+            "serviceDate": "2026-09-26"
+          },
+          "to": {
+            "stationId": "jp.station.shibuya",
+            "scheduledTime": "2026-09-26T08:21:00+09:00",
+            "platform": "5",
+            "serviceDate": "2026-09-26"
+          },
+          "stopCount": 4,
+          "boardingPosition": {
+            "carNumber": 8,
+            "carCount": 10,
+            "purpose": "transfer",
+            "note": "渋谷での乗換に便利"
+          }
+        },
+        {
+          "type": "walk",
+          "fromStationId": "jp.station.shibuya",
+          "toStationId": "jp.station.shibuya",
+          "durationMinutes": 2
+        },
+        {
+          "type": "train",
+          "lineId": "jp.line.tokyu.toyoko",
+          "trainTypeId": "jp.train-type.limited-express",
+          "destinationName": "元町・中華街行",
+          "from": {
+            "stationId": "jp.station.shibuya",
+            "scheduledTime": "2026-09-26T08:25:00+09:00",
+            "serviceDate": "2026-09-26"
+          },
+          "to": {
+            "stationId": "jp.station.yokohama",
+            "scheduledTime": "2026-09-26T08:52:00+09:00",
+            "serviceDate": "2026-09-26"
+          },
+          "stopCount": 4
+        }
+      ],
+      "hasServiceDisruption": false,
+      "availability": "available",
+      "warnings": [],
+      "routeContext": "opaque-signed-value-1"
+    },
+    {
+      "id": "r2",
+      "departureTime": "2026-09-26T08:09:00+09:00",
+      "arrivalTime": "2026-09-26T08:59:00+09:00",
+      "durationMinutes": 50,
+      "transferCount": 1,
+      "fare": {
+        "fareType": "estimated",
+        "estimatedTotal": 920
+      },
+      "legs": [
+        {
+          "type": "train",
+          "lineId": "jp.line.jr-east.yamanote",
+          "trainTypeId": "jp.train-type.local-stop",
+          "destinationName": "外回り",
+          "from": {
+            "stationId": "jp.station.ikebukuro",
+            "scheduledTime": "2026-09-26T08:09:00+09:00",
+            "estimatedTime": "2026-09-26T08:12:00+09:00",
+            "serviceDate": "2026-09-26"
+          },
+          "to": {
+            "stationId": "jp.station.shinagawa",
+            "scheduledTime": "2026-09-26T08:37:00+09:00",
+            "estimatedTime": "2026-09-26T08:40:00+09:00",
+            "serviceDate": "2026-09-26"
+          },
+          "stopCount": 12,
+          "disruption": {
+            "status": "delayed",
+            "delayMinutes": 3,
+            "summary": "信号確認の影響で遅れ"
+          }
+        },
+        {
+          "type": "train",
+          "lineId": "jp.line.sample.no-symbol",
+          "trainTypeId": "jp.train-type.local",
+          "destinationName": "小田原行",
+          "from": {
+            "stationId": "jp.station.shinagawa",
+            "scheduledTime": "2026-09-26T08:42:00+09:00",
+            "serviceDate": "2026-09-26"
+          },
+          "to": {
+            "stationId": "jp.station.yokohama",
+            "scheduledTime": "2026-09-26T08:59:00+09:00",
+            "serviceDate": "2026-09-26"
+          },
+          "stopCount": 2
+        }
+      ],
+      "hasServiceDisruption": true,
+      "availability": "partial",
+      "warnings": [
+        {
+          "code": "PARTIAL_DATA",
+          "message": "一部の区間で番線を取得できませんでした",
+          "legIndex": 1
+        },
+        {
+          "code": "SOMETHING_NEW",
+          "message": "未知のコードでも文言は表示する"
+        }
+      ],
+      "routeContext": "opaque-signed-value-2"
+    }
+  ]
+}

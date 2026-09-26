@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyLists/1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- 案内中の経路を Widget Extension と共有する（frontend.md 8.1） -->
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.com.example.norikae</string>
+	</array>
+	<!-- お気に入り・履歴・マイ路線の同期（SwiftData + CloudKit） -->
+	<key>com.apple.developer.icloud-container-identifiers</key>
+	<array>
+		<string>iCloud.com.example.norikae</string>
+	</array>
+	<key>com.apple.developer.icloud-services</key>
+	<array>
+		<string>CloudKit</string>
+	</array>
+	<!-- Live Activity のプッシュ更新 -->
+	<key>aps-environment</key>
+	<string>development</string>
+</dict>
+</plist>

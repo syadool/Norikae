@@ -1,0 +1,18 @@
+# Xcode（project.yml から生成する）
+*.xcodeproj
+*.xcworkspace
+!Packages/**/*.xcworkspace
+xcuserdata/
+DerivedData/
+build/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# macOS
+.DS_Store
+
+# XcodeGen が作る Info.plist（project.yml の info.properties から生成）
+App/Info.plist
+NorikaeWidget/Info.plist

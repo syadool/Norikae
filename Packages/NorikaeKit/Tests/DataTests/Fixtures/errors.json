@@ -1,0 +1,6 @@
+[
+  { "error": { "code": "FEATURE_UNAVAILABLE", "message": "この区間・条件には対応していません", "retryable": false } },
+  { "error": { "code": "ROUTE_CONTEXT_EXPIRED", "message": "経路の情報の有効期限が切れました", "retryable": false } },
+  { "error": { "code": "PROVIDER_UNAVAILABLE", "message": "提供元に接続できません", "retryable": true } },
+  { "error": { "code": "NEW_CODE_IN_V1", "message": "しばらくしてからお試しください", "retryable": true } }
+]

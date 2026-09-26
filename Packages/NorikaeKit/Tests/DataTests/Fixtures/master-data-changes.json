@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "asOf": "2026-10-01T04:00:00+09:00",
+    "partialResult": false,
+    "isStale": false,
+    "sources": [
+      "master"
+    ],
+    "attributions": []
+  },
+  "data": {
+    "version": 12,
+    "changes": [
+      {
+        "version": 11,
+        "entity": "stations",
+        "id": "jp.station.new-a",
+        "operation": "upsert",
+        "value": {
+          "id": "jp.station.new-a",
+          "name": "新駅",
+          "reading": "しんえき",
+          "prefecture": "東京都",
+          "region": "kanto",
+          "lineIds": [
+            "jp.line.jr-east.yamanote"
+          ],
+          "latitude": 35.63,
+          "longitude": 139.74
+        }
+      },
+      {
+        "version": 12,
+        "entity": "stations",
+        "id": "jp.station.old-a",
+        "operation": "delete",
+        "replacedById": "jp.station.new-a"
+      },
+      {
+        "version": 12,
+        "entity": "stations",
+        "id": "jp.station.gone",
+        "operation": "delete"
+      },
+      {
+        "version": 12,
+        "entity": "lines",
+        "id": "jp.line.old",
+        "operation": "delete",
+        "replacedById": "jp.line.new"
+      }
+    ]
+  }
+}

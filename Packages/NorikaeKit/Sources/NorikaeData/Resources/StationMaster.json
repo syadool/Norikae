@@ -1,0 +1,847 @@
+{
+ "version": 0,
+ "operators": [
+  {
+   "id": "jp.operator.jr-east",
+   "name": "JR東日本",
+   "region": [
+    "kanto"
+   ]
+  },
+  {
+   "id": "jp.operator.tokyo-metro",
+   "name": "東京メトロ",
+   "region": [
+    "kanto"
+   ]
+  },
+  {
+   "id": "jp.operator.toei",
+   "name": "都営地下鉄",
+   "region": [
+    "kanto"
+   ]
+  },
+  {
+   "id": "jp.operator.tokyu",
+   "name": "東急電鉄",
+   "region": [
+    "kanto"
+   ]
+  },
+  {
+   "id": "jp.operator.jr-west",
+   "name": "JR西日本",
+   "region": [
+    "kansai"
+   ]
+  },
+  {
+   "id": "jp.operator.osaka-metro",
+   "name": "Osaka Metro",
+   "region": [
+    "kansai"
+   ]
+  },
+  {
+   "id": "jp.operator.hankyu",
+   "name": "阪急電鉄",
+   "region": [
+    "kansai"
+   ]
+  }
+ ],
+ "lines": [
+  {
+   "id": "jp.line.jr-east.yamanote",
+   "operatorId": "jp.operator.jr-east",
+   "name": "山手線",
+   "region": "kanto",
+   "symbol": "JY",
+   "color": "#80C241"
+  },
+  {
+   "id": "jp.line.jr-east.shonan-shinjuku",
+   "operatorId": "jp.operator.jr-east",
+   "name": "湘南新宿ライン",
+   "region": "kanto",
+   "symbol": "JS",
+   "color": "#E0301E"
+  },
+  {
+   "id": "jp.line.jr-east.tokaido",
+   "operatorId": "jp.operator.jr-east",
+   "name": "東海道線",
+   "region": "kanto",
+   "symbol": "JT",
+   "color": "#F68B1E"
+  },
+  {
+   "id": "jp.line.jr-east.chuo-rapid",
+   "operatorId": "jp.operator.jr-east",
+   "name": "中央線快速",
+   "region": "kanto",
+   "symbol": "JC",
+   "color": "#F15A22"
+  },
+  {
+   "id": "jp.line.jr-east.saikyo",
+   "operatorId": "jp.operator.jr-east",
+   "name": "埼京線",
+   "region": "kanto",
+   "symbol": "JA",
+   "color": "#00AC9A"
+  },
+  {
+   "id": "jp.line.jr-east.keihin-tohoku",
+   "operatorId": "jp.operator.jr-east",
+   "name": "京浜東北線",
+   "region": "kanto",
+   "symbol": "JK",
+   "color": "#00B2E5"
+  },
+  {
+   "id": "jp.line.jr-east.sotetsu-direct",
+   "operatorId": "jp.operator.jr-east",
+   "name": "相鉄・JR直通線",
+   "region": "kanto",
+   "displayCode": "相直"
+  },
+  {
+   "id": "jp.line.tokyo-metro.ginza",
+   "operatorId": "jp.operator.tokyo-metro",
+   "name": "銀座線",
+   "region": "kanto",
+   "symbol": "G",
+   "color": "#FF9500"
+  },
+  {
+   "id": "jp.line.tokyo-metro.marunouchi",
+   "operatorId": "jp.operator.tokyo-metro",
+   "name": "丸ノ内線",
+   "region": "kanto",
+   "symbol": "M",
+   "color": "#F62E36"
+  },
+  {
+   "id": "jp.line.tokyo-metro.fukutoshin",
+   "operatorId": "jp.operator.tokyo-metro",
+   "name": "副都心線",
+   "region": "kanto",
+   "symbol": "F",
+   "color": "#9C5E31"
+  },
+  {
+   "id": "jp.line.toei.oedo",
+   "operatorId": "jp.operator.toei",
+   "name": "大江戸線",
+   "region": "kanto",
+   "symbol": "E",
+   "color": "#CE045B"
+  },
+  {
+   "id": "jp.line.tokyu.toyoko",
+   "operatorId": "jp.operator.tokyu",
+   "name": "東横線",
+   "region": "kanto",
+   "symbol": "TY",
+   "color": "#DA0442"
+  },
+  {
+   "id": "jp.line.jr-west.kyoto",
+   "operatorId": "jp.operator.jr-west",
+   "name": "JR京都線",
+   "region": "kansai",
+   "symbol": "A",
+   "color": "#0072BC"
+  },
+  {
+   "id": "jp.line.jr-west.osaka-loop",
+   "operatorId": "jp.operator.jr-west",
+   "name": "大阪環状線",
+   "region": "kansai",
+   "symbol": "O",
+   "color": "#E8414B"
+  },
+  {
+   "id": "jp.line.osaka-metro.midosuji",
+   "operatorId": "jp.operator.osaka-metro",
+   "name": "御堂筋線",
+   "region": "kansai",
+   "symbol": "M",
+   "color": "#E5171F"
+  },
+  {
+   "id": "jp.line.osaka-metro.sennichimae",
+   "operatorId": "jp.operator.osaka-metro",
+   "name": "千日前線",
+   "region": "kansai",
+   "symbol": "S",
+   "color": "#E44D93"
+  },
+  {
+   "id": "jp.line.hankyu.kobe",
+   "operatorId": "jp.operator.hankyu",
+   "name": "阪急神戸線",
+   "region": "kansai",
+   "symbol": "HK",
+   "color": "#7A1F2B"
+  }
+ ],
+ "stations": [
+  {
+   "id": "jp.station.ikebukuro",
+   "name": "池袋",
+   "reading": "いけぶくろ",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.jr-east.yamanote",
+    "jp.line.jr-east.shonan-shinjuku",
+    "jp.line.jr-east.saikyo",
+    "jp.line.tokyo-metro.marunouchi",
+    "jp.line.tokyo-metro.fukutoshin"
+   ],
+   "latitude": 35.7295,
+   "longitude": 139.7109,
+   "exits": [
+    {
+     "name": "東口",
+     "latitude": 35.7303,
+     "longitude": 139.7133
+    },
+    {
+     "name": "西口",
+     "latitude": 35.7297,
+     "longitude": 139.7087
+    }
+   ]
+  },
+  {
+   "id": "jp.station.shinjuku",
+   "name": "新宿",
+   "reading": "しんじゅく",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.jr-east.yamanote",
+    "jp.line.jr-east.shonan-shinjuku",
+    "jp.line.jr-east.saikyo",
+    "jp.line.jr-east.chuo-rapid",
+    "jp.line.tokyo-metro.marunouchi",
+    "jp.line.toei.oedo"
+   ],
+   "latitude": 35.6896,
+   "longitude": 139.7006,
+   "exits": [
+    {
+     "name": "東口",
+     "latitude": 35.6912,
+     "longitude": 139.701
+    },
+    {
+     "name": "南口",
+     "latitude": 35.688,
+     "longitude": 139.7002
+    }
+   ]
+  },
+  {
+   "id": "jp.station.shinjuku-sanchome",
+   "name": "新宿三丁目",
+   "reading": "しんじゅくさんちょうめ",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.tokyo-metro.marunouchi",
+    "jp.line.tokyo-metro.fukutoshin"
+   ],
+   "latitude": 35.6909,
+   "longitude": 139.7048
+  },
+  {
+   "id": "jp.station.meiji-jingumae",
+   "name": "明治神宮前",
+   "reading": "めいじじんぐうまえ",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.tokyo-metro.fukutoshin"
+   ],
+   "latitude": 35.6687,
+   "longitude": 139.7053
+  },
+  {
+   "id": "jp.station.shibuya",
+   "name": "渋谷",
+   "reading": "しぶや",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.jr-east.yamanote",
+    "jp.line.jr-east.shonan-shinjuku",
+    "jp.line.jr-east.saikyo",
+    "jp.line.tokyo-metro.ginza",
+    "jp.line.tokyo-metro.fukutoshin",
+    "jp.line.tokyu.toyoko"
+   ],
+   "latitude": 35.658,
+   "longitude": 139.7016,
+   "exits": [
+    {
+     "name": "ハチ公口",
+     "latitude": 35.6591,
+     "longitude": 139.7006
+    },
+    {
+     "name": "東口",
+     "latitude": 35.6589,
+     "longitude": 139.7036
+    }
+   ]
+  },
+  {
+   "id": "jp.station.ebisu",
+   "name": "恵比寿",
+   "reading": "えびす",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.jr-east.yamanote",
+    "jp.line.jr-east.shonan-shinjuku",
+    "jp.line.jr-east.saikyo"
+   ],
+   "latitude": 35.6467,
+   "longitude": 139.7101
+  },
+  {
+   "id": "jp.station.osaki",
+   "name": "大崎",
+   "reading": "おおさき",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.jr-east.yamanote",
+    "jp.line.jr-east.shonan-shinjuku",
+    "jp.line.jr-east.saikyo"
+   ],
+   "latitude": 35.6197,
+   "longitude": 139.7286
+  },
+  {
+   "id": "jp.station.shinagawa",
+   "name": "品川",
+   "reading": "しながわ",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.jr-east.yamanote",
+    "jp.line.jr-east.tokaido",
+    "jp.line.jr-east.keihin-tohoku"
+   ],
+   "latitude": 35.6285,
+   "longitude": 139.7388,
+   "exits": [
+    {
+     "name": "高輪口",
+     "latitude": 35.6284,
+     "longitude": 139.7377
+    },
+    {
+     "name": "港南口",
+     "latitude": 35.6289,
+     "longitude": 139.7412
+    }
+   ]
+  },
+  {
+   "id": "jp.station.nakameguro",
+   "name": "中目黒",
+   "reading": "なかめぐろ",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.tokyu.toyoko"
+   ],
+   "latitude": 35.6442,
+   "longitude": 139.699
+  },
+  {
+   "id": "jp.station.jiyugaoka",
+   "name": "自由が丘",
+   "reading": "じゆうがおか",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.tokyu.toyoko"
+   ],
+   "latitude": 35.6076,
+   "longitude": 139.6687
+  },
+  {
+   "id": "jp.station.musashi-kosugi",
+   "name": "武蔵小杉",
+   "reading": "むさしこすぎ",
+   "prefecture": "神奈川県",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.jr-east.shonan-shinjuku",
+    "jp.line.tokyu.toyoko",
+    "jp.line.jr-east.sotetsu-direct"
+   ],
+   "latitude": 35.5763,
+   "longitude": 139.6596
+  },
+  {
+   "id": "jp.station.kikuna",
+   "name": "菊名",
+   "reading": "きくな",
+   "prefecture": "神奈川県",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.tokyu.toyoko"
+   ],
+   "latitude": 35.5097,
+   "longitude": 139.6305
+  },
+  {
+   "id": "jp.station.hazawa-yokohama-kokudai",
+   "name": "羽沢横浜国大",
+   "reading": "はざわよこはまこくだい",
+   "prefecture": "神奈川県",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.jr-east.sotetsu-direct"
+   ],
+   "latitude": 35.4964,
+   "longitude": 139.6117
+  },
+  {
+   "id": "jp.station.kawasaki",
+   "name": "川崎",
+   "reading": "かわさき",
+   "prefecture": "神奈川県",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.jr-east.tokaido",
+    "jp.line.jr-east.keihin-tohoku"
+   ],
+   "latitude": 35.5313,
+   "longitude": 139.6969
+  },
+  {
+   "id": "jp.station.yokohama",
+   "name": "横浜",
+   "reading": "よこはま",
+   "prefecture": "神奈川県",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.jr-east.shonan-shinjuku",
+    "jp.line.jr-east.tokaido",
+    "jp.line.jr-east.keihin-tohoku",
+    "jp.line.tokyu.toyoko"
+   ],
+   "latitude": 35.4657,
+   "longitude": 139.6223,
+   "exits": [
+    {
+     "name": "中央北改札",
+     "latitude": 35.4662,
+     "longitude": 139.622
+    },
+    {
+     "name": "きた東口",
+     "latitude": 35.4665,
+     "longitude": 139.6236
+    }
+   ]
+  },
+  {
+   "id": "jp.station.tokyo",
+   "name": "東京",
+   "reading": "とうきょう",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.jr-east.yamanote",
+    "jp.line.jr-east.tokaido",
+    "jp.line.jr-east.chuo-rapid",
+    "jp.line.jr-east.keihin-tohoku",
+    "jp.line.tokyo-metro.marunouchi"
+   ],
+   "latitude": 35.6812,
+   "longitude": 139.7671,
+   "exits": [
+    {
+     "name": "丸の内北口",
+     "latitude": 35.6823,
+     "longitude": 139.7658
+    },
+    {
+     "name": "八重洲中央口",
+     "latitude": 35.6812,
+     "longitude": 139.769
+    }
+   ]
+  },
+  {
+   "id": "jp.station.otemachi",
+   "name": "大手町",
+   "reading": "おおてまち",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.tokyo-metro.marunouchi"
+   ],
+   "latitude": 35.6848,
+   "longitude": 139.7661
+  },
+  {
+   "id": "jp.station.kanda",
+   "name": "神田",
+   "reading": "かんだ",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.jr-east.yamanote",
+    "jp.line.jr-east.chuo-rapid",
+    "jp.line.jr-east.keihin-tohoku",
+    "jp.line.tokyo-metro.ginza"
+   ],
+   "latitude": 35.6918,
+   "longitude": 139.7709
+  },
+  {
+   "id": "jp.station.nihombashi",
+   "name": "日本橋",
+   "reading": "にほんばし",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.tokyo-metro.ginza"
+   ],
+   "latitude": 35.6823,
+   "longitude": 139.774
+  },
+  {
+   "id": "jp.station.kyobashi",
+   "name": "京橋",
+   "reading": "きょうばし",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.tokyo-metro.ginza"
+   ],
+   "latitude": 35.6767,
+   "longitude": 139.7701
+  },
+  {
+   "id": "jp.station.ginza",
+   "name": "銀座",
+   "reading": "ぎんざ",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.tokyo-metro.ginza",
+    "jp.line.tokyo-metro.marunouchi"
+   ],
+   "latitude": 35.6717,
+   "longitude": 139.765
+  },
+  {
+   "id": "jp.station.shimbashi",
+   "name": "新橋",
+   "reading": "しんばし",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.jr-east.yamanote",
+    "jp.line.jr-east.tokaido",
+    "jp.line.jr-east.keihin-tohoku",
+    "jp.line.tokyo-metro.ginza"
+   ],
+   "latitude": 35.6663,
+   "longitude": 139.7583
+  },
+  {
+   "id": "jp.station.ueno",
+   "name": "上野",
+   "reading": "うえの",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.jr-east.yamanote",
+    "jp.line.jr-east.keihin-tohoku",
+    "jp.line.tokyo-metro.ginza"
+   ],
+   "latitude": 35.7138,
+   "longitude": 139.7773
+  },
+  {
+   "id": "jp.station.kichijoji",
+   "name": "吉祥寺",
+   "reading": "きちじょうじ",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.jr-east.chuo-rapid"
+   ],
+   "latitude": 35.7033,
+   "longitude": 139.5797
+  },
+  {
+   "id": "jp.station.omiya",
+   "name": "大宮",
+   "reading": "おおみや",
+   "prefecture": "埼玉県",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.jr-east.shonan-shinjuku",
+    "jp.line.jr-east.saikyo",
+    "jp.line.jr-east.keihin-tohoku"
+   ],
+   "latitude": 35.9064,
+   "longitude": 139.6239
+  },
+  {
+   "id": "jp.station.roppongi",
+   "name": "六本木",
+   "reading": "ろっぽんぎ",
+   "prefecture": "東京都",
+   "region": "kanto",
+   "lineIds": [
+    "jp.line.toei.oedo"
+   ],
+   "latitude": 35.6641,
+   "longitude": 139.7314
+  },
+  {
+   "id": "jp.station.osaka",
+   "name": "大阪",
+   "reading": "おおさか",
+   "prefecture": "大阪府",
+   "region": "kansai",
+   "lineIds": [
+    "jp.line.jr-west.kyoto",
+    "jp.line.jr-west.osaka-loop"
+   ],
+   "latitude": 34.7025,
+   "longitude": 135.4959,
+   "exits": [
+    {
+     "name": "中央口",
+     "latitude": 34.7024,
+     "longitude": 135.496
+    }
+   ]
+  },
+  {
+   "id": "jp.station.umeda",
+   "name": "梅田",
+   "reading": "うめだ",
+   "prefecture": "大阪府",
+   "region": "kansai",
+   "lineIds": [
+    "jp.line.osaka-metro.midosuji"
+   ],
+   "latitude": 34.7052,
+   "longitude": 135.4983
+  },
+  {
+   "id": "jp.station.osaka-umeda",
+   "name": "大阪梅田",
+   "reading": "おおさかうめだ",
+   "prefecture": "大阪府",
+   "region": "kansai",
+   "lineIds": [
+    "jp.line.hankyu.kobe"
+   ],
+   "latitude": 34.7054,
+   "longitude": 135.4986
+  },
+  {
+   "id": "jp.station.shin-osaka",
+   "name": "新大阪",
+   "reading": "しんおおさか",
+   "prefecture": "大阪府",
+   "region": "kansai",
+   "lineIds": [
+    "jp.line.jr-west.kyoto",
+    "jp.line.osaka-metro.midosuji"
+   ],
+   "latitude": 34.7334,
+   "longitude": 135.5001
+  },
+  {
+   "id": "jp.station.takatsuki",
+   "name": "高槻",
+   "reading": "たかつき",
+   "prefecture": "大阪府",
+   "region": "kansai",
+   "lineIds": [
+    "jp.line.jr-west.kyoto"
+   ],
+   "latitude": 34.8517,
+   "longitude": 135.6178
+  },
+  {
+   "id": "jp.station.kyoto",
+   "name": "京都",
+   "reading": "きょうと",
+   "prefecture": "京都府",
+   "region": "kansai",
+   "lineIds": [
+    "jp.line.jr-west.kyoto"
+   ],
+   "latitude": 34.9858,
+   "longitude": 135.7588
+  },
+  {
+   "id": "jp.station.tennoji",
+   "name": "天王寺",
+   "reading": "てんのうじ",
+   "prefecture": "大阪府",
+   "region": "kansai",
+   "lineIds": [
+    "jp.line.jr-west.osaka-loop",
+    "jp.line.osaka-metro.midosuji"
+   ],
+   "latitude": 34.6466,
+   "longitude": 135.5138
+  },
+  {
+   "id": "jp.station.namba",
+   "name": "なんば",
+   "reading": "なんば",
+   "prefecture": "大阪府",
+   "region": "kansai",
+   "lineIds": [
+    "jp.line.osaka-metro.midosuji",
+    "jp.line.osaka-metro.sennichimae"
+   ],
+   "latitude": 34.6666,
+   "longitude": 135.5003
+  },
+  {
+   "id": "jp.station.nippombashi",
+   "name": "日本橋",
+   "reading": "にっぽんばし",
+   "prefecture": "大阪府",
+   "region": "kansai",
+   "lineIds": [
+    "jp.line.osaka-metro.sennichimae"
+   ],
+   "latitude": 34.6655,
+   "longitude": 135.5063
+  },
+  {
+   "id": "jp.station.tsuruhashi",
+   "name": "鶴橋",
+   "reading": "つるはし",
+   "prefecture": "大阪府",
+   "region": "kansai",
+   "lineIds": [
+    "jp.line.jr-west.osaka-loop",
+    "jp.line.osaka-metro.sennichimae"
+   ],
+   "latitude": 34.6655,
+   "longitude": 135.5302
+  },
+  {
+   "id": "jp.station.kyobashi-osaka",
+   "name": "京橋",
+   "reading": "きょうばし",
+   "prefecture": "大阪府",
+   "region": "kansai",
+   "lineIds": [
+    "jp.line.jr-west.osaka-loop"
+   ],
+   "latitude": 34.6967,
+   "longitude": 135.5343
+  },
+  {
+   "id": "jp.station.nishinomiya-kitaguchi",
+   "name": "西宮北口",
+   "reading": "にしのみやきたぐち",
+   "prefecture": "兵庫県",
+   "region": "kansai",
+   "lineIds": [
+    "jp.line.hankyu.kobe"
+   ],
+   "latitude": 34.7475,
+   "longitude": 135.3614
+  },
+  {
+   "id": "jp.station.kobe-sannomiya",
+   "name": "神戸三宮",
+   "reading": "こうべさんのみや",
+   "prefecture": "兵庫県",
+   "region": "kansai",
+   "lineIds": [
+    "jp.line.hankyu.kobe"
+   ],
+   "latitude": 34.6946,
+   "longitude": 135.1958
+  }
+ ],
+ "trainTypes": [
+  {
+   "id": "jp.train-type.local",
+   "name": "普通",
+   "shortName": "普",
+   "isPaidExpress": false,
+   "isShinkansen": false
+  },
+  {
+   "id": "jp.train-type.local-stop",
+   "name": "各駅停車",
+   "shortName": "各",
+   "isPaidExpress": false,
+   "isShinkansen": false
+  },
+  {
+   "id": "jp.train-type.rapid",
+   "name": "快速",
+   "shortName": "快",
+   "isPaidExpress": false,
+   "isShinkansen": false,
+   "color": "#0067C0"
+  },
+  {
+   "id": "jp.train-type.special-rapid",
+   "name": "新快速",
+   "shortName": "新快",
+   "isPaidExpress": false,
+   "isShinkansen": false,
+   "color": "#0072BC"
+  },
+  {
+   "id": "jp.train-type.express",
+   "name": "急行",
+   "shortName": "急",
+   "isPaidExpress": false,
+   "isShinkansen": false
+  },
+  {
+   "id": "jp.train-type.limited-express",
+   "name": "特急",
+   "shortName": "特",
+   "isPaidExpress": false,
+   "isShinkansen": false
+  },
+  {
+   "id": "jp.train-type.paid-limited-express",
+   "name": "特急（有料）",
+   "shortName": "特",
+   "isPaidExpress": true,
+   "isShinkansen": false
+  },
+  {
+   "id": "jp.train-type.shinkansen",
+   "name": "新幹線",
+   "shortName": "新",
+   "isPaidExpress": false,
+   "isShinkansen": true
+  }
+ ]
+}

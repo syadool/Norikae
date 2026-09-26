@@ -1,0 +1,115 @@
+# XcodeGen の定義（`xcodegen generate` で Norikae.xcodeproj を作る）
+#
+# バンドル ID・App Group・iCloud コンテナは仮の値（com.example.*）。
+# Apple Developer Program の登録後に、自分のチームの値に置き換える（frontend.md 12.2）。
+name: Norikae
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    iOS: "18.0"
+  developmentLanguage: ja
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+    SWIFT_EMIT_LOC_STRINGS: YES
+packages:
+  NorikaeKit:
+    path: Packages/NorikaeKit
+targets:
+  Norikae:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+      - path: Shared
+    dependencies:
+      - package: NorikaeKit
+        product: Feature
+      - package: NorikaeKit
+        product: LiveGuidance
+      - target: NorikaeWidget
+    entitlements:
+      path: App/Norikae.entitlements
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Norikae
+        CFBundleDevelopmentRegion: ja
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        # iPhone のみ、縦向き固定（frontend.md 10.4）
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        NSSupportsLiveActivities: true
+        NSLocationWhenInUseUsageDescription: 最寄り駅の表示、駅周辺の地図、出発リマインドの時刻の計算に使います。位置情報はサーバーに送りません。
+        UIBackgroundModes:
+          - remote-notification
+        ITSAppUsesNonExemptEncryption: false
+        # バックエンドの URL。空のあいだはモックで動く（AppDependencies.makeFromLaunchEnvironment）
+        NorikaeAPIBaseURL: ""
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.norikae
+        TARGETED_DEVICE_FAMILY: "1"
+        SUPPORTS_MACCATALYST: NO
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
+
+  NorikaeWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: NorikaeWidget
+      - path: Shared
+    dependencies:
+      - package: NorikaeKit
+        product: LiveGuidance
+      - sdk: WidgetKit.framework
+      - sdk: SwiftUI.framework
+      - sdk: ActivityKit.framework
+    entitlements:
+      path: NorikaeWidget/NorikaeWidget.entitlements
+    info:
+      path: NorikaeWidget/Info.plist
+      properties:
+        CFBundleDisplayName: Norikae
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSSupportsLiveActivities: true
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.norikae.widget
+        TARGETED_DEVICE_FAMILY: "1"
+
+  NorikaeUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: NorikaeUITests
+    dependencies:
+      - target: Norikae
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.norikae.uitests
+        TEST_TARGET_NAME: Norikae
+
+schemes:
+  Norikae:
+    build:
+      targets:
+        Norikae: all
+        NorikaeWidget: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - NorikaeUITests

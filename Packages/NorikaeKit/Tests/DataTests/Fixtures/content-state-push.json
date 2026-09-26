@@ -1,0 +1,23 @@
+{
+  "aps": {
+    "timestamp": 1790378040,
+    "event": "update",
+    "stale-date": 1790380020,
+    "content-state": {
+      "legs": [
+        {
+          "index": 0,
+          "platform": "3",
+          "scheduledDeparture": 1790378100,
+          "estimatedDeparture": 1790378400,
+          "scheduledArrival": 1790379120,
+          "estimatedArrival": 1790379420,
+          "delayMinutes": 5,
+          "isCancelled": false
+        }
+      ],
+      "disruptionSummary": "人身事故の影響で遅れ",
+      "updatedAt": 1790378040
+    }
+  }
+}

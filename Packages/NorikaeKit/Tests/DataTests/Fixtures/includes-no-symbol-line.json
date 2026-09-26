@@ -1,0 +1,13 @@
+{
+  "lines": [
+    {
+      "id": "jp.line.sample.no-symbol",
+      "operatorId": "jp.operator.jr-east",
+      "name": "サンプル線",
+      "symbol": null,
+      "displayCode": null,
+      "color": null,
+      "region": "kanto"
+    }
+  ]
+}
