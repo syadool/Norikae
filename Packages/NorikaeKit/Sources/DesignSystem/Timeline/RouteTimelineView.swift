@@ -295,15 +295,22 @@ struct TimelineRideRow: View {
     private var lineHeader: some View {
         let type = catalog.trainType(leg.trainTypeId)
         return VStack(alignment: .leading, spacing: 2) {
-            HStack(spacing: 6) {
+            if dynamicTypeSize.isAccessibilitySize {
+                // 大きい文字サイズでは、路線名と種別を横に並べると列に分かれて途中で切れる。
+                // チップを上に置き、路線名と種別を 1 つの文として折り返す
                 LineSymbolChip(appearance, size: .detail)
-                Text(appearance.name)
-                    .font(.subheadline.weight(.bold))
-                    .foregroundStyle(NKColor.textPrimary)
-                if let type {
-                    Text(type.name)
+                lineTitle(type)
+            } else {
+                HStack(spacing: 6) {
+                    LineSymbolChip(appearance, size: .detail)
+                    Text(appearance.name)
                         .font(.subheadline.weight(.bold))
-                        .foregroundStyle(trainTypeColor(type))
+                        .foregroundStyle(NKColor.textPrimary)
+                    if let type {
+                        Text(type.name)
+                            .font(.subheadline.weight(.bold))
+                            .foregroundStyle(trainTypeColor(type))
+                    }
                 }
             }
             Text(leg.destinationName)
@@ -311,6 +318,14 @@ struct TimelineRideRow: View {
                 .foregroundStyle(NKColor.textSecondary)
         }
         .accessibilityElement(children: .combine)
+    }
+
+    /// 路線名と種別を 1 つの文にしたもの（アクセシビリティサイズ用）
+    private func lineTitle(_ type: TrainType?) -> Text {
+        let name = Text(appearance.name).foregroundStyle(NKColor.textPrimary)
+        guard let type else { return name.font(.subheadline.weight(.bold)) }
+        return (name + Text(verbatim: " ") + Text(type.name).foregroundStyle(trainTypeColor(type)))
+            .font(.subheadline.weight(.bold))
     }
 
     /// 「途中 n 駅に停車 ›」。`trainRunId` がない区間はタップできないようにし、見た目でも区別する（FR-DTL-07）
