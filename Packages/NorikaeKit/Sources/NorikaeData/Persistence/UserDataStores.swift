@@ -72,6 +72,8 @@ public enum UserDataContainer {
 @Observable
 public final class SwiftDataUserDataStore: UserDataStore {
     public private(set) var revision = 0
+    /// mainContext はコンテナを保持しない。コンテナが解放されると、コンテキストを使った時点でクラッシュするので持っておく
+    private let container: ModelContainer
     private let context: ModelContext
     private let encoder = NorikaeJSON.makeEncoder()
     private let decoder = NorikaeJSON.makeDecoder()
@@ -80,6 +82,7 @@ public final class SwiftDataUserDataStore: UserDataStore {
     public static let historyLimit = 50
 
     public init(container: ModelContainer) {
+        self.container = container
         context = container.mainContext
     }
 
