@@ -221,34 +221,57 @@ jobs:
         env:
           # swift-snapshot-testing の記録モード（SNAPSHOT_TESTING_RECORD）。TEST_RUNNER_ を付けるとテストのプロセスに渡る
           TEST_RUNNER_SNAPSHOT_TESTING_RECORD: ${{ inputs.record }}
+          RESULT_BUNDLE: ${{ github.workspace }}/build/record.xcresult
         run: |
           set -o pipefail
-          # 記録したテストは失敗扱いになる（swift-snapshot-testing の仕様）ので、終了コードでは判定しない
-          if xcodebuild test \
+          # all のときは古い画像を消してから記録する（消えたテストの画像や、記録に失敗した古い画像が残らないように）
+          if [ "$TEST_RUNNER_SNAPSHOT_TESTING_RECORD" = all ]; then
+            rm -rf "$GITHUB_WORKSPACE/$SNAPSHOT_DIR"
+          fi
+          # 記録したテストは失敗扱いになる（swift-snapshot-testing の仕様）ので、終了コードではなく次のステップで失敗の中身を見る
+          xcodebuild test \
             -scheme NorikaeKit-Package \
             -destination "$DESTINATION" \
             -only-testing:SnapshotTests \
             -derivedDataPath "$GITHUB_WORKSPACE/$DERIVED_DATA/NorikaeKit" \
             -clonedSourcePackagesDirPath "$GITHUB_WORKSPACE/$SOURCE_PACKAGES" \
+            -resultBundlePath "$RESULT_BUNDLE" \
             -skipMacroValidation \
-            | xcbeautify; then
-            echo "::notice::すべて既存の参照画像と一致した（記録したものはない）"
-          else
-            echo "::notice::テストは失敗扱い。記録モードでは想定どおり。次のステップで画像ができたかを確かめる"
-          fi
+            | xcbeautify || true
 
       - name: 記録した画像を確かめる
+        env:
+          RESULT_BUNDLE: ${{ github.workspace }}/build/record.xcresult
         run: |
-          count=$(find "$SNAPSHOT_DIR" -name '*.png' 2>/dev/null | wc -l | tr -d ' ')
-          if [ "$count" -eq 0 ]; then
-            echo "::error::参照画像ができていない。前のステップのビルドエラーを確認する"
+          # ビルドの失敗・クラッシュ・記録以外のテスト失敗があれば、画像があっても失敗にする
+          if ! summary=$(xcrun xcresulttool get test-results summary --path "$RESULT_BUNDLE"); then
+            echo "::error::テスト結果が読めない。前のステップのビルドエラーを確認する"
             exit 1
           fi
-          echo "参照画像：${count} 枚"
+          total=$(jq '.totalTestCount // 0' <<<"$summary")
+          if [ "$total" -eq 0 ]; then
+            echo "::error::テストが 1 件も実行されていない。前のステップのビルドエラーを確認する"
+            exit 1
+          fi
+          # 記録による失敗の文言は「Automatically recorded snapshot」を含む（swift-snapshot-testing の AssertSnapshot.swift）
+          unexpected=$(jq -r '.testFailures[]? | select(.failureText | test("Automatically recorded snapshot") | not) | "\(.testName): \(.failureText)"' <<<"$summary")
+          if [ -n "$unexpected" ]; then
+            echo "::error::記録以外の理由で失敗したテストがある"
+            echo "$unexpected"
+            exit 1
+          fi
+
+          count=$(find "$SNAPSHOT_DIR" -name '*.png' 2>/dev/null | wc -l | tr -d ' ')
+          if [ "$count" -eq 0 ]; then
+            echo "::error::参照画像ができていない"
+            exit 1
+          fi
+          recorded=$(jq '[.testFailures[]?] | length' <<<"$summary")
+          echo "テスト ${total} 件、記録による失敗 ${recorded} 件、参照画像 ${count} 枚"
           # リポジトリの直下で展開すれば、そのままの場所に置かれるようにする
           mkdir -p "build/snapshots/$(dirname "$SNAPSHOT_DIR")"
           cp -R "$SNAPSHOT_DIR" "build/snapshots/$SNAPSHOT_DIR"
-          echo "### 参照画像を記録した（${count} 枚）" >> "$GITHUB_STEP_SUMMARY"
+          echo "### 参照画像を記録した（${count} 枚、記録モード：${{ inputs.record }}）" >> "$GITHUB_STEP_SUMMARY"
           echo "Artifacts の \`snapshots\` を落として、リポジトリの直下で展開し、\`$SNAPSHOT_DIR\` をコミットする。" >> "$GITHUB_STEP_SUMMARY"
 
       - uses: actions/upload-artifact@v7
