@@ -253,8 +253,8 @@ struct CompareColumnBody: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     /// 発着のラベルどうしが重なる間隔。アクセシビリティサイズでは時刻の文字の高さに合わせて広げる
     @ScaledMetric(relativeTo: .footnote) private var scaledLabelSpacing: CGFloat = 16
-    /// 時刻の横に駅名を出すのに最低限要る幅（駅名 1〜2 文字分）。これより狭いときは駅名を省く
-    @ScaledMetric(relativeTo: .caption2) private var minimumStationNameWidth: CGFloat = 22
+    /// 時刻の横に駅名を出すのに最低限要る幅（駅名 1 文字分ほど）。これより狭いときは駅名を省く
+    @ScaledMetric(relativeTo: .caption2) private var minimumStationNameWidth: CGFloat = 16
 
     var body: some View {
         let isAccessibilitySize = dynamicTypeSize.isAccessibilitySize
