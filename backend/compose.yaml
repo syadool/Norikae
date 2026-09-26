@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: norikae
+      POSTGRES_PASSWORD: local-development-only
+      POSTGRES_DB: norikae
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U norikae"]
+      interval: 5s
+      retries: 10
+  migrate:
+    build: .
+    command: ["node", "dist/src/migrate.js"]
+    environment:
+      DATABASE_URL: postgres://norikae:local-development-only@db:5432/norikae
+    depends_on:
+      db:
+        condition: service_healthy
+  api:
+    build: .
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      DATABASE_URL: postgres://norikae:local-development-only@db:5432/norikae
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?Set a random 32-byte base64 encryption key}
+      DEPLOYMENT_MODE: private
+      TRUST_PROXY: ${TRUST_PROXY:-}
+      NAVITIME_ENABLED: ${NAVITIME_ENABLED:-false}
+      RAPIDAPI_KEY: ${RAPIDAPI_KEY:-}
+      NAVITIME_REQUEST_BUDGET: ${NAVITIME_REQUEST_BUDGET:-450}
+      NAVITIME_ATTRIBUTION_TEXT: ${NAVITIME_ATTRIBUTION_TEXT:-}
+      NAVITIME_LICENSE_URL: ${NAVITIME_LICENSE_URL:-}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+volumes:
+  postgres:

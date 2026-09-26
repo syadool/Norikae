@@ -1,0 +1,14 @@
+{
+  "name": "norikae-backend", "version": "0.1.0", "private": true, "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "tsx watch src/server.ts", "build": "tsc", "start": "node dist/src/server.js",
+    "test": "tsx --test test/*.test.ts", "check": "tsc --noEmit",
+    "migrate": "tsx src/migrate.ts", "openapi": "tsx scripts/openapi.ts",
+    "navitime": "node --env-file-if-exists=.env --import tsx scripts/navitime.ts",
+    "dev:env": "node --env-file-if-exists=.env --import tsx src/server.ts",
+    "migrate:env": "node --env-file-if-exists=.env --import tsx src/migrate.ts"
+  },
+  "dependencies": { "fastify": "^5.0.0", "@fastify/swagger": "^9.0.0", "@fastify/compress": "^8.0.0", "@sinclair/typebox": "^0.34.0", "pg": "^8.0.0" },
+  "devDependencies": { "@types/node": "^24.0.0", "@types/pg": "^8.0.0", "tsx": "^4.0.0", "typescript": "^5.0.0", "@electric-sql/pglite": "^0.3.0" }
+}
