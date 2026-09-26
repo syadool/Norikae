@@ -1,0 +1,66 @@
+# 型チェック・テスト・ビルド・OpenAPI の同期確認・Docker イメージのビルド
+name: Backend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - backend/**
+      - .github/workflows/backend.yml
+  pull_request:
+    paths:
+      - backend/**
+      - .github/workflows/backend.yml
+
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      NAVITIME_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - run: npm ci
+
+      - name: 型チェック
+        run: npm run check
+
+      - name: テスト（PGlite を使うので DB サーバーは不要）
+        run: npm test
+
+      - name: ビルド
+        run: npm run build
+
+      - name: openapi.json が生成結果と一致するか
+        run: |
+          npm run openapi
+          git diff --exit-code -- openapi.json || {
+            echo '::error file=backend/openapi.json::openapi.json が古いままです。backend で `npm run openapi` を実行してコミットしてください。'
+            exit 1
+          }
+
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker イメージのビルド（push はしない）
+        run: docker build backend
