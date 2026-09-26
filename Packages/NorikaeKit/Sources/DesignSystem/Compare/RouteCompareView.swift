@@ -253,6 +253,8 @@ struct CompareColumnBody: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     /// 発着のラベルどうしが重なる間隔。アクセシビリティサイズでは時刻の文字の高さに合わせて広げる
     @ScaledMetric(relativeTo: .footnote) private var scaledLabelSpacing: CGFloat = 16
+    /// 時刻の横に駅名を出すのに最低限要る幅（駅名 1〜2 文字分）。これより狭いときは駅名を省く
+    @ScaledMetric(relativeTo: .caption2) private var minimumStationNameWidth: CGFloat = 22
 
     var body: some View {
         let isAccessibilitySize = dynamicTypeSize.isAccessibilitySize
@@ -331,15 +333,23 @@ struct CompareColumnBody: View {
 
             // 発着の時刻と駅名
             ForEach(Array(layout.labels.enumerated()), id: \.offset) { _, label in
-                HStack(alignment: .firstTextBaseline, spacing: 3) {
-                    Text(NKFormat.time(label.time))
-                        .font(.nkNumeric(.footnote))
-                        .foregroundStyle(NKColor.textPrimary)
+                Group {
                     // 大きい文字サイズでは駅名を省き、時刻だけにする（design-spec 5.2）
                     if label.showsStationName, !isAccessibilitySize {
-                        Text(catalog.station(label.stationId)?.name ?? "")
-                            .font(.caption2)
-                            .foregroundStyle(NKColor.textSecondary)
+                        // 時刻と駅名が列に入らないとき（XXXL など）は、時刻が「8:…」と切れないよう駅名を省く。
+                        // 駅名は理想の幅を最低限の幅にし、入るときは今までどおり駅名の後ろを「…」で切る
+                        ViewThatFits(in: .horizontal) {
+                            HStack(alignment: .firstTextBaseline, spacing: 3) {
+                                timeText(label)
+                                Text(catalog.station(label.stationId)?.name ?? "")
+                                    .font(.caption2)
+                                    .foregroundStyle(NKColor.textSecondary)
+                                    .frame(idealWidth: minimumStationNameWidth, alignment: .leading)
+                            }
+                            timeText(label)
+                        }
+                    } else {
+                        timeText(label)
                     }
                 }
                 .lineLimit(1)
@@ -349,6 +359,12 @@ struct CompareColumnBody: View {
             }
         }
         .frame(width: width, height: height, alignment: .topLeading)
+    }
+
+    private func timeText(_ label: CompareColumnLayout.TimeLabel) -> some View {
+        Text(NKFormat.time(label.time))
+            .font(.nkNumeric(.footnote))
+            .foregroundStyle(NKColor.textPrimary)
     }
 
     private func appearance(_ band: CompareColumnLayout.Band) -> LineAppearance {
