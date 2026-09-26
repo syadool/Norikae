@@ -20,7 +20,7 @@ public struct RouteBadgeView: View {
             .accessibilityLabel(Text(Self.accessibilityText(for: badge)))
     }
 
-    public nonisolated static func title(for badge: RouteBadge) -> String {
+    public static func title(for badge: RouteBadge) -> String {
         switch badge {
         case .fastest: String(localized: "早", bundle: .module)
         case .fewestTransfers: String(localized: "楽", bundle: .module)
@@ -28,7 +28,7 @@ public struct RouteBadgeView: View {
         }
     }
 
-    public nonisolated static func accessibilityText(for badge: RouteBadge) -> String {
+    public static func accessibilityText(for badge: RouteBadge) -> String {
         switch badge {
         case .fastest: String(localized: "所要時間が最短", bundle: .module)
         case .fewestTransfers: String(localized: "乗換が最少", bundle: .module)
