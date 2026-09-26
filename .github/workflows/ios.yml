@@ -1,0 +1,49 @@
+# ビルドとテスト（frontend.md 12.2）
+name: iOS
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: macos-15
+    timeout-minutes: 45
+    env:
+      DESTINATION: platform=iOS Simulator,name=iPhone 16,OS=latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode を選ぶ
+        run: sudo xcode-select -s /Applications/Xcode_16.4.app || sudo xcode-select -s /Applications/Xcode.app
+
+      - name: パッケージのテスト（Domain・Data・Feature・スナップショット）
+        working-directory: Packages/NorikaeKit
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -scheme NorikaeKit-Package \
+            -destination "$DESTINATION" \
+            -skipMacroValidation \
+            | xcbeautify || exit 1
+
+      - name: Xcode プロジェクトを作る
+        run: |
+          brew install xcodegen
+          xcodegen generate
+
+      - name: アプリのビルドと UI テスト
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project Norikae.xcodeproj \
+            -scheme Norikae \
+            -destination "$DESTINATION" \
+            CODE_SIGNING_ALLOWED=NO \
+            -skipMacroValidation \
+            | xcbeautify || exit 1
