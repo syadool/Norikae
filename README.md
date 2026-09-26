@@ -68,7 +68,18 @@ xcodebuild test -scheme NorikaeKit-Package -destination 'platform=iOS Simulator,
 | `FeatureTests` | ViewModel（縦比較・経路詳細・検索フォーム）、エラーの見せ方 |
 | `SnapshotTests` | 縦比較、縦タイムライン、Live Activity（ロック画面・Dynamic Island・Watch）、非対応・情報なしの表示。ライト・ダーク・Dynamic Type |
 
-スナップショットテストは、初回の実行で参照画像を記録して失敗する。iPhone 16（iOS 18）のシミュレーターで記録し、`__Snapshots__` をコミットする。
+スナップショットテストは、初回の実行で参照画像を記録して失敗する。iPhone 16（iOS 18.5）のシミュレーター・Xcode 16.4 で記録し、`__Snapshots__` をコミットする。CI では記録しない（参照画像がなければ失敗する）。
+
+Mac がなくても、GitHub Actions で記録できる。
+
+1. Actions の「iOS」ワークフローを「Run workflow」で起動する（ブランチを選ぶ。`record` は `all` ですべて記録し直し、`missing` でないものだけ記録）
+2. 終わったら、実行結果の Artifacts から `snapshots` を落とす
+3. リポジトリの直下で展開すると `Packages/NorikaeKit/Tests/SnapshotTests/__Snapshots__` に置かれるので、それをコミットする
+
+```bash
+gh workflow run ios.yml --ref <ブランチ> -f record=all
+gh run download <実行 ID> -n snapshots
+```
 
 UI テストは `Norikae` スキームで実行する。CI は [.github/workflows/ios.yml](.github/workflows/ios.yml)。
 

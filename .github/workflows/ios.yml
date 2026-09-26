@@ -1,36 +1,110 @@
 # ビルドとテスト（frontend.md 12.2）
+#
+# - test:             パッケージのテスト（スナップショットを含む）と UI テスト。Xcode 16.4 ＋ iPhone 16（iOS 18.5）
+# - build-xcode26:    Xcode 26（iOS 26 SDK）でアプリがビルドできるかの確認。App Store Connect へのアップロードは
+#                     2026-04-28 から iOS 26 SDK が必須なので、提出に使う Xcode でも壊れていないことを見ておく
+# - record-snapshots: スナップショットの参照画像を記録する（手動で起動）。Windows の手元では記録できないので、これが唯一の記録手段
+#
+# スナップショットは「記録した環境と同じ Xcode・シミュレーター」でしか比較できない。test と record-snapshots の
+# XCODE・SIM_DEVICE・SIM_OS は必ずそろえること。変えたら参照画像を記録し直す。
 name: iOS
 
 on:
   push:
     branches: [main]
+    paths:
+      - App/**
+      - NorikaeWidget/**
+      - Shared/**
+      - NorikaeUITests/**
+      - Packages/**
+      - project.yml
+      - .github/workflows/ios.yml
   pull_request:
+    paths:
+      - App/**
+      - NorikaeWidget/**
+      - Shared/**
+      - NorikaeUITests/**
+      - Packages/**
+      - project.yml
+      - .github/workflows/ios.yml
+  workflow_dispatch:
+    inputs:
+      record:
+        description: 記録モード（all：すべて記録し直す、missing：参照画像がないものだけ記録する）
+        type: choice
+        options: [all, missing]
+        default: all
 
 concurrency:
-  group: ios-${{ github.ref }}
+  group: ios-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  # パッケージのテストとアプリで共有する（どちらも build/ の下。build/ は .gitignore 済み）
+  SOURCE_PACKAGES: build/SourcePackages
+  DERIVED_DATA: build/DerivedData
 
 jobs:
   test:
+    if: github.event_name != 'workflow_dispatch'
     runs-on: macos-15
     timeout-minutes: 45
     env:
-      DESTINATION: platform=iOS Simulator,name=iPhone 16,OS=latest
+      XCODE: "16.4"
+      SIM_DEVICE: iPhone 16
+      SIM_OS: "18.5"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Xcode を選ぶ
-        run: sudo xcode-select -s /Applications/Xcode_16.4.app || sudo xcode-select -s /Applications/Xcode.app
+        run: |
+          sudo xcode-select -s "/Applications/Xcode_${XCODE}.app"
+          xcodebuild -version
+
+      - name: シミュレーターを選ぶ
+        run: |
+          # 起動直後は CoreSimulator の準備ができておらず、名前だけの指定だと見つからないことがある。UDID で指定する
+          runtime="com.apple.CoreSimulator.SimRuntime.iOS-${SIM_OS//./-}"
+          udid=$(xcrun simctl list devices available -j             | jq -r --arg rt "$runtime" --arg name "$SIM_DEVICE" '.devices[$rt][]? | select(.name == $name) | .udid' | head -n 1)
+          if [ -z "$udid" ]; then
+            echo "$SIM_DEVICE（iOS $SIM_OS）がないので作る"
+            xcrun simctl list runtimes
+            udid=$(xcrun simctl create "$SIM_DEVICE" "com.apple.CoreSimulator.SimDeviceType.${SIM_DEVICE// /-}" "$runtime")
+          fi
+          xcrun simctl boot "$udid" || true
+          echo "DESTINATION=platform=iOS Simulator,id=$udid" >> "$GITHUB_ENV"
+          echo "$SIM_DEVICE（iOS $SIM_OS）：$udid"
+
+      - name: SPM のキャッシュ
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.SOURCE_PACKAGES }}
+          key: spm-${{ runner.os }}-${{ hashFiles('**/Package.resolved', 'Packages/NorikaeKit/Package.swift', 'project.yml') }}
+          restore-keys: spm-${{ runner.os }}-
+
+      - name: DerivedData のキャッシュ
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.DERIVED_DATA }}
+          key: deriveddata-${{ runner.os }}-xcode${{ env.XCODE }}-${{ hashFiles('**/Package.resolved', 'Packages/NorikaeKit/Package.swift', 'project.yml') }}
+          restore-keys: deriveddata-${{ runner.os }}-xcode${{ env.XCODE }}-
 
       - name: パッケージのテスト（Domain・Data・Feature・スナップショット）
         working-directory: Packages/NorikaeKit
+        env:
+          # CI では参照画像を記録しない。ないときは失敗させる（記録は record-snapshots で行う）
+          TEST_RUNNER_SNAPSHOT_TESTING_RECORD: never
         run: |
           set -o pipefail
           xcodebuild test \
             -scheme NorikaeKit-Package \
             -destination "$DESTINATION" \
+            -derivedDataPath "$GITHUB_WORKSPACE/$DERIVED_DATA/NorikaeKit" \
+            -clonedSourcePackagesDirPath "$GITHUB_WORKSPACE/$SOURCE_PACKAGES" \
             -skipMacroValidation \
-            | xcbeautify || exit 1
+            | xcbeautify
 
       - name: Xcode プロジェクトを作る
         run: |
@@ -44,6 +118,141 @@ jobs:
             -project Norikae.xcodeproj \
             -scheme Norikae \
             -destination "$DESTINATION" \
-            CODE_SIGNING_ALLOWED=NO \
+            -derivedDataPath "$GITHUB_WORKSPACE/$DERIVED_DATA/Norikae" \
+            -clonedSourcePackagesDirPath "$GITHUB_WORKSPACE/$SOURCE_PACKAGES" \
             -skipMacroValidation \
-            | xcbeautify || exit 1
+            CODE_SIGNING_ALLOWED=NO \
+            | xcbeautify
+
+  build-xcode26:
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: macos-26
+    timeout-minutes: 30
+    env:
+      XCODE: "26.6"
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Xcode を選ぶ
+        run: |
+          sudo xcode-select -s "/Applications/Xcode_${XCODE}.app"
+          xcodebuild -version
+
+      - name: SPM のキャッシュ
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.SOURCE_PACKAGES }}
+          key: spm-${{ runner.os }}-${{ hashFiles('**/Package.resolved', 'Packages/NorikaeKit/Package.swift', 'project.yml') }}
+          restore-keys: spm-${{ runner.os }}-
+
+      - name: DerivedData のキャッシュ
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.DERIVED_DATA }}
+          key: deriveddata-${{ runner.os }}-xcode${{ env.XCODE }}-${{ hashFiles('**/Package.resolved', 'Packages/NorikaeKit/Package.swift', 'project.yml') }}
+          restore-keys: deriveddata-${{ runner.os }}-xcode${{ env.XCODE }}-
+
+      - name: Xcode プロジェクトを作る
+        run: |
+          brew install xcodegen
+          xcodegen generate
+
+      - name: アプリのビルド（iOS 26 SDK）
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Norikae.xcodeproj \
+            -scheme Norikae \
+            -destination "generic/platform=iOS Simulator" \
+            -derivedDataPath "$GITHUB_WORKSPACE/$DERIVED_DATA/Norikae" \
+            -clonedSourcePackagesDirPath "$GITHUB_WORKSPACE/$SOURCE_PACKAGES" \
+            -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcbeautify
+
+  record-snapshots:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: macos-15
+    timeout-minutes: 45
+    env:
+      # test ジョブとそろえる
+      XCODE: "16.4"
+      SIM_DEVICE: iPhone 16
+      SIM_OS: "18.5"
+      SNAPSHOT_DIR: Packages/NorikaeKit/Tests/SnapshotTests/__Snapshots__
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Xcode を選ぶ
+        run: |
+          sudo xcode-select -s "/Applications/Xcode_${XCODE}.app"
+          xcodebuild -version
+
+      - name: シミュレーターを選ぶ
+        run: |
+          # 起動直後は CoreSimulator の準備ができておらず、名前だけの指定だと見つからないことがある。UDID で指定する
+          runtime="com.apple.CoreSimulator.SimRuntime.iOS-${SIM_OS//./-}"
+          udid=$(xcrun simctl list devices available -j             | jq -r --arg rt "$runtime" --arg name "$SIM_DEVICE" '.devices[$rt][]? | select(.name == $name) | .udid' | head -n 1)
+          if [ -z "$udid" ]; then
+            echo "$SIM_DEVICE（iOS $SIM_OS）がないので作る"
+            xcrun simctl list runtimes
+            udid=$(xcrun simctl create "$SIM_DEVICE" "com.apple.CoreSimulator.SimDeviceType.${SIM_DEVICE// /-}" "$runtime")
+          fi
+          xcrun simctl boot "$udid" || true
+          echo "DESTINATION=platform=iOS Simulator,id=$udid" >> "$GITHUB_ENV"
+          echo "$SIM_DEVICE（iOS $SIM_OS）：$udid"
+
+      - name: SPM のキャッシュ
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.SOURCE_PACKAGES }}
+          key: spm-${{ runner.os }}-${{ hashFiles('**/Package.resolved', 'Packages/NorikaeKit/Package.swift', 'project.yml') }}
+          restore-keys: spm-${{ runner.os }}-
+
+      - name: DerivedData のキャッシュ
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.DERIVED_DATA }}
+          key: deriveddata-${{ runner.os }}-xcode${{ env.XCODE }}-${{ hashFiles('**/Package.resolved', 'Packages/NorikaeKit/Package.swift', 'project.yml') }}
+          restore-keys: deriveddata-${{ runner.os }}-xcode${{ env.XCODE }}-
+
+      - name: 参照画像を記録する
+        working-directory: Packages/NorikaeKit
+        env:
+          # swift-snapshot-testing の記録モード（SNAPSHOT_TESTING_RECORD）。TEST_RUNNER_ を付けるとテストのプロセスに渡る
+          TEST_RUNNER_SNAPSHOT_TESTING_RECORD: ${{ inputs.record }}
+        run: |
+          set -o pipefail
+          # 記録したテストは失敗扱いになる（swift-snapshot-testing の仕様）ので、終了コードでは判定しない
+          if xcodebuild test \
+            -scheme NorikaeKit-Package \
+            -destination "$DESTINATION" \
+            -only-testing:SnapshotTests \
+            -derivedDataPath "$GITHUB_WORKSPACE/$DERIVED_DATA/NorikaeKit" \
+            -clonedSourcePackagesDirPath "$GITHUB_WORKSPACE/$SOURCE_PACKAGES" \
+            -skipMacroValidation \
+            | xcbeautify; then
+            echo "::notice::すべて既存の参照画像と一致した（記録したものはない）"
+          else
+            echo "::notice::テストは失敗扱い。記録モードでは想定どおり。次のステップで画像ができたかを確かめる"
+          fi
+
+      - name: 記録した画像を確かめる
+        run: |
+          count=$(find "$SNAPSHOT_DIR" -name '*.png' 2>/dev/null | wc -l | tr -d ' ')
+          if [ "$count" -eq 0 ]; then
+            echo "::error::参照画像ができていない。前のステップのビルドエラーを確認する"
+            exit 1
+          fi
+          echo "参照画像：${count} 枚"
+          # リポジトリの直下で展開すれば、そのままの場所に置かれるようにする
+          mkdir -p "build/snapshots/$(dirname "$SNAPSHOT_DIR")"
+          cp -R "$SNAPSHOT_DIR" "build/snapshots/$SNAPSHOT_DIR"
+          echo "### 参照画像を記録した（${count} 枚）" >> "$GITHUB_STEP_SUMMARY"
+          echo "Artifacts の \`snapshots\` を落として、リポジトリの直下で展開し、\`$SNAPSHOT_DIR\` をコミットする。" >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: snapshots
+          path: build/snapshots/
+          if-no-files-found: error
