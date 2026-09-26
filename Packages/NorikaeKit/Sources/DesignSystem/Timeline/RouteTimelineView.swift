@@ -3,7 +3,8 @@ import SwiftUI
 
 /// 経路詳細の縦タイムライン（design-spec 7.5、FR-DTL-01・05・07・09・10・11）
 ///
-/// 3 つの列：時刻 60 ｜ レール 26 ｜ 内容
+/// 3 つの列：時刻 60 ｜ レール 26 ｜ 内容。
+/// アクセシビリティサイズでは時刻が 60 に収まらないので、時刻の列をなくして駅名の上に出す（design-spec 5.2）
 public struct RouteTimelineView: View {
     private let route: Route
     private let catalog: Catalog
@@ -155,53 +156,73 @@ struct TimelineStationRow: View {
     let hasRealtime: Bool
 
     @ScaledMetric(relativeTo: .headline) private var rowHeight: CGFloat = NKTimelineMetrics.stationRowHeight
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
+        let inlineTime = dynamicTypeSize.isAccessibilitySize
         HStack(alignment: .center, spacing: 0) {
-            VStack(alignment: .trailing, spacing: 0) {
-                HStack(alignment: .firstTextBaseline, spacing: 2) {
-                    Text(NKFormat.time(stop.scheduledTime))
-                        .font(.nkNumeric(.headline, weight: .bold))
-                        .foregroundStyle(NKColor.textPrimary)
-                    Text(role == .departure ? String(localized: "発", bundle: .module) : String(localized: "着", bundle: .module))
-                        .font(.caption2)
-                        .foregroundStyle(NKColor.textTertiary)
+            if inlineTime {
+                Color.clear.frame(width: NKTimelineMetrics.railLeading(for: dynamicTypeSize))
+            } else {
+                VStack(alignment: .trailing, spacing: 0) {
+                    timeText
                 }
-                // 見込み時刻（リアルタイムの予測がある場合のみ。ないときに「定刻」とは出さない）
-                if let estimated = stop.estimatedTime, let delay = stop.delayMinutes, delay != 0 {
-                    Text("見込 \(NKFormat.time(estimated))", bundle: .module)
-                        .font(.nkNumeric(.caption2))
-                        .foregroundStyle(NKColor.delayText)
-                }
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .frame(width: NKTimelineMetrics.timeColumnWidth, alignment: .trailing)
+                .padding(.trailing, 2)
             }
-            .lineLimit(1)
-            .minimumScaleFactor(0.7)
-            .frame(width: NKTimelineMetrics.timeColumnWidth, alignment: .trailing)
-            .padding(.trailing, 2)
 
             Color.clear.frame(width: NKTimelineMetrics.railColumnWidth)
 
-            HStack(spacing: 8) {
-                Text(stationName)
-                    .font(.headline)
-                    .foregroundStyle(NKColor.textPrimary)
-                    .lineLimit(2)
-                // 番線がない区間は札を出さない（FR-DTL-01）
-                if let platform = stop.platform {
-                    PlatformPill(platform)
+            VStack(alignment: .leading, spacing: 2) {
+                if inlineTime {
+                    VStack(alignment: .leading, spacing: 0) {
+                        timeText
+                    }
+                }
+                HStack(spacing: 8) {
+                    Text(stationName)
+                        .font(.headline)
+                        .foregroundStyle(NKColor.textPrimary)
+                        .lineLimit(2)
+                    // 番線がない区間は札を出さない（FR-DTL-01）
+                    if let platform = stop.platform {
+                        PlatformPill(platform)
+                    }
                 }
             }
             .padding(.leading, 4)
+            .padding(.vertical, inlineTime ? 6 : 0)
             Spacer(minLength: 0)
         }
         .frame(minHeight: rowHeight)
         // レールは行の大きさに合わせて背景に描く
         .background(alignment: .topLeading) {
             RailColumn(above: railAbove, below: railBelow, node: node)
-                .padding(.leading, NKTimelineMetrics.timeColumnWidth + 2)
+                .padding(.leading, NKTimelineMetrics.railLeading(for: dynamicTypeSize))
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text(accessibilityText))
+    }
+
+    /// 時刻と「発」「着」、見込み時刻
+    @ViewBuilder
+    private var timeText: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 2) {
+            Text(NKFormat.time(stop.scheduledTime))
+                .font(.nkNumeric(.headline, weight: .bold))
+                .foregroundStyle(NKColor.textPrimary)
+            Text(role == .departure ? String(localized: "発", bundle: .module) : String(localized: "着", bundle: .module))
+                .font(.caption2)
+                .foregroundStyle(NKColor.textTertiary)
+        }
+        // 見込み時刻（リアルタイムの予測がある場合のみ。ないときに「定刻」とは出さない）
+        if let estimated = stop.estimatedTime, let delay = stop.delayMinutes, delay != 0 {
+            Text("見込 \(NKFormat.time(estimated))", bundle: .module)
+                .font(.nkNumeric(.caption2))
+                .foregroundStyle(NKColor.delayText)
+        }
     }
 
     private var accessibilityText: String {
@@ -229,9 +250,11 @@ struct TimelineRideRow: View {
     let warnings: [RouteWarning]
     let onSelectStopList: (TrainLeg) -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
-            Color.clear.frame(width: NKTimelineMetrics.timeColumnWidth + 2)
+            Color.clear.frame(width: NKTimelineMetrics.railLeading(for: dynamicTypeSize))
             Color.clear.frame(width: NKTimelineMetrics.railColumnWidth)
             VStack(alignment: .leading, spacing: 6) {
                 lineHeader
@@ -265,22 +288,31 @@ struct TimelineRideRow: View {
         }
         .background(alignment: .topLeading) {
             RailColumn(above: .solid(appearance.color), below: .solid(appearance.color), node: nil)
-                .padding(.leading, NKTimelineMetrics.timeColumnWidth + 2)
+                .padding(.leading, NKTimelineMetrics.railLeading(for: dynamicTypeSize))
         }
     }
 
     private var lineHeader: some View {
         let type = catalog.trainType(leg.trainTypeId)
         return VStack(alignment: .leading, spacing: 2) {
-            HStack(spacing: 6) {
+            if dynamicTypeSize.isAccessibilitySize {
+                // 大きい文字サイズでは、路線名と種別を横に並べると列に分かれて途中で切れる。
+                // チップを上に置き、路線名と種別を 1 つの文として折り返す
                 LineSymbolChip(appearance, size: .detail)
-                Text(appearance.name)
-                    .font(.subheadline.weight(.bold))
-                    .foregroundStyle(NKColor.textPrimary)
-                if let type {
-                    Text(type.name)
+                lineTitle(type)
+                    // 1 行分の高さで測られて「…」で切れることがあるので、折り返した高さを使う
+                    .fixedSize(horizontal: false, vertical: true)
+            } else {
+                HStack(spacing: 6) {
+                    LineSymbolChip(appearance, size: .detail)
+                    Text(appearance.name)
                         .font(.subheadline.weight(.bold))
-                        .foregroundStyle(trainTypeColor(type))
+                        .foregroundStyle(NKColor.textPrimary)
+                    if let type {
+                        Text(type.name)
+                            .font(.subheadline.weight(.bold))
+                            .foregroundStyle(trainTypeColor(type))
+                    }
                 }
             }
             Text(leg.destinationName)
@@ -288,6 +320,14 @@ struct TimelineRideRow: View {
                 .foregroundStyle(NKColor.textSecondary)
         }
         .accessibilityElement(children: .combine)
+    }
+
+    /// 路線名と種別を 1 つの文にしたもの（アクセシビリティサイズ用）
+    private func lineTitle(_ type: TrainType?) -> Text {
+        let name = Text(appearance.name).foregroundStyle(NKColor.textPrimary)
+        guard let type else { return name.font(.subheadline.weight(.bold)) }
+        return (name + Text(verbatim: " ") + Text(type.name).foregroundStyle(trainTypeColor(type)))
+            .font(.subheadline.weight(.bold))
     }
 
     /// 「途中 n 駅に停車 ›」。`trainRunId` がない区間はタップできないようにし、見た目でも区別する（FR-DTL-07）
@@ -311,7 +351,11 @@ struct TimelineRideRow: View {
             .accessibilityHint(Text("停車駅一覧を開きます", bundle: .module))
             .accessibilityIdentifier("stopListButton-\(legIndex)")
         } else {
-            HStack(spacing: 6) {
+            // 大きい文字サイズでは札が横に入らないので、文言の下に置く
+            let layout = dynamicTypeSize.isAccessibilitySize
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4))
+                : AnyLayout(HStackLayout(spacing: 6))
+            layout {
                 text
                     .font(.footnote)
                     .foregroundStyle(NKColor.textTertiary)
@@ -380,27 +424,27 @@ struct TimelineTransferRow: View {
     let onShowStationMap: () -> Void
 
     @ScaledMetric(relativeTo: .footnote) private var rowHeight: CGFloat = NKTimelineMetrics.transferRowHeight
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         HStack(alignment: .center, spacing: 0) {
-            Color.clear.frame(width: NKTimelineMetrics.timeColumnWidth + 2)
+            Color.clear.frame(width: NKTimelineMetrics.railLeading(for: dynamicTypeSize))
             Color.clear.frame(width: NKTimelineMetrics.railColumnWidth)
             VStack(alignment: .leading, spacing: 2) {
-                HStack(spacing: 4) {
-                    Image(systemName: "figure.walk")
-                        .foregroundStyle(NKColor.textSecondary)
-                        .accessibilityHidden(true)
-                    Text(transferText)
-                        .font(.footnote)
-                        .foregroundStyle(NKColor.textSecondary)
-                    Spacer(minLength: 4)
-                    Button(action: onShowStationMap) {
-                        Text("駅の地図", bundle: .module)
-                            .font(.footnote)
-                            .foregroundStyle(NKColor.accent)
-                            .frame(minHeight: NKSpacing.minTapTarget)
+                if dynamicTypeSize.isAccessibilitySize {
+                    // 大きい文字サイズでは「駅の地図」を乗換時間の下に置く
+                    HStack(alignment: .firstTextBaseline, spacing: 4) {
+                        walkIcon
+                        transferLabel
                     }
-                    .buttonStyle(.plain)
+                    mapButton
+                } else {
+                    HStack(spacing: 4) {
+                        walkIcon
+                        transferLabel
+                        Spacer(minLength: 4)
+                        mapButton
+                    }
                 }
                 ForEach(warnings, id: \.self) { warning in
                     Text(warning.message)
@@ -413,8 +457,30 @@ struct TimelineTransferRow: View {
         .frame(minHeight: rowHeight)
         .background(alignment: .topLeading) {
             RailColumn(above: .dotted, below: .dotted, node: nil)
-                .padding(.leading, NKTimelineMetrics.timeColumnWidth + 2)
+                .padding(.leading, NKTimelineMetrics.railLeading(for: dynamicTypeSize))
         }
+    }
+
+    private var walkIcon: some View {
+        Image(systemName: "figure.walk")
+            .foregroundStyle(NKColor.textSecondary)
+            .accessibilityHidden(true)
+    }
+
+    private var transferLabel: some View {
+        Text(transferText)
+            .font(.footnote)
+            .foregroundStyle(NKColor.textSecondary)
+    }
+
+    private var mapButton: some View {
+        Button(action: onShowStationMap) {
+            Text("駅の地図", bundle: .module)
+                .font(.footnote)
+                .foregroundStyle(NKColor.accent)
+                .frame(minHeight: NKSpacing.minTapTarget)
+        }
+        .buttonStyle(.plain)
     }
 
     private var transferText: String {

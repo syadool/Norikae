@@ -114,6 +114,8 @@ public enum NKCompareMetrics {
     public static let columnWidth: CGFloat = 110
     public static let visibleColumnCount = 3
     public static let headerCardSize: CGFloat = 104
+    /// アクセシビリティサイズでの列の要約の高さ。要約を縦に組み替え、文字の大きさに上限を設けるので固定の値にする（5.2）
+    public static let accessibilityHeaderCardHeight: CGFloat = 232
     public static let bandLeading: CGFloat = 10
     public static let bandWidth: CGFloat = 22
     public static let labelLeading: CGFloat = 40
@@ -124,6 +126,19 @@ public enum NKCompareMetrics {
     public static let tickIntervalCandidates = [5, 10, 15, 30, 60]
     /// 乗換駅の「着」と「発」のラベルがこれより近いときは、2 つ目の駅名を省く
     public static let labelCollapseDistance: CGFloat = 32
+
+    /// アクセシビリティサイズでの文字の大きさの上限。列の幅（約 107pt）に収まる大きさで止める（5.2）
+    public static let headerMaxTypeSize: DynamicTypeSize = .accessibility2
+    public static let bodyMaxTypeSize: DynamicTypeSize = .accessibility1
+    public static let axisMaxTypeSize: DynamicTypeSize = .xxxLarge
+    /// アクセシビリティサイズでの、要約のバッジと本体の路線記号チップの上限
+    public static let accessibilityBadgeMaxTypeSize: DynamicTypeSize = .xLarge
+    public static let accessibilityChipMaxTypeSize: DynamicTypeSize = .xxLarge
+
+    /// 列の要約の高さ。`scaled` は headerCardSize を `.callout` に合わせて拡大した値
+    public static func headerHeight(scaled: CGFloat, dynamicTypeSize: DynamicTypeSize) -> CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? accessibilityHeaderCardHeight : scaled
+    }
 }
 
 /// 縦タイムラインの寸法（7.5）
@@ -138,6 +153,13 @@ public enum NKTimelineMetrics {
     public static let transferRowHeight: CGFloat = 44
     public static let carSize = CGSize(width: 18, height: 10)
     public static let carSpacing: CGFloat = 2
+    /// アクセシビリティサイズでのレールの左の余白。時刻を駅名の上に出し、時刻の列をなくす（5.2）
+    public static let accessibilityRailLeading: CGFloat = 8
+
+    /// レールの左端の位置（時刻の列の幅 ＋ 余白 2）
+    public static func railLeading(for dynamicTypeSize: DynamicTypeSize) -> CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? accessibilityRailLeading : timeColumnWidth + 2
+    }
 }
 
 // MARK: - 文字（5 章）

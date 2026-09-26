@@ -48,7 +48,11 @@ public struct UnsupportedBadge: View {
         self.feature = feature
     }
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     public var body: some View {
+        // 大きい文字サイズでは 1 行だと画面の幅を超えるので、折り返せるようにし、角丸の四角にする
+        let wraps = dynamicTypeSize.isAccessibilitySize
         Label {
             Text(UnsupportedText.label(feature))
         } icon: {
@@ -59,8 +63,8 @@ public struct UnsupportedBadge: View {
         .labelStyle(.titleAndIcon)
         .padding(.horizontal, 8)
         .padding(.vertical, 3)
-        .background(NKColor.fillPill, in: Capsule())
-        .fixedSize()
+        .background(NKColor.fillPill, in: wraps ? AnyShape(RoundedRectangle(cornerRadius: NKRadius.sm, style: .continuous)) : AnyShape(Capsule()))
+        .fixedSize(horizontal: !wraps, vertical: true)
     }
 }
 
@@ -190,6 +194,8 @@ public struct ErrorStateView: View {
                 .font(.subheadline)
                 .foregroundStyle(NKColor.textPrimary)
                 .multilineTextAlignment(.center)
+                // 大きい文字サイズで 1 行分の高さで測られて「…」で切れないよう、折り返した高さを使う
+                .fixedSize(horizontal: false, vertical: true)
             if retryable {
                 Button {
                     retry()

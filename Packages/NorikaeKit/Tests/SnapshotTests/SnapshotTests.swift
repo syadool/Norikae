@@ -44,17 +44,22 @@ final class SnapshotTests: XCTestCase {
         ("light-ax3", .light, .accessibilityExtraExtraLarge),
     ]
 
-    private func assertScreens<V: View>(_ view: V, height: CGFloat = 700, named name: String, file: StaticString = #filePath, testName: String = #function, line: UInt = #line) {
+    /// - Parameter accessibilityHeight: アクセシビリティサイズで使う高さ。内容が縦に伸びて `height` に収まらない画面で指定する
+    private func assertScreens<V: View>(
+        _ view: V, height: CGFloat = 700, accessibilityHeight: CGFloat? = nil, named name: String,
+        file: StaticString = #filePath, testName: String = #function, line: UInt = #line
+    ) {
         for (label, style, size) in Self.appearances {
             let traits = UITraitCollection { traits in
                 traits.userInterfaceStyle = style
                 traits.preferredContentSizeCategory = size
             }
+            let screenHeight = size.isAccessibilityCategory ? accessibilityHeight ?? height : height
             let screen = view
-                .frame(width: 390, height: height)
+                .frame(width: 390, height: screenHeight)
                 .background(NKColor.background)
             assertSnapshot(
-                of: screen, as: .image(layout: .fixed(width: 390, height: height), traits: traits),
+                of: screen, as: .image(layout: .fixed(width: 390, height: screenHeight), traits: traits),
                 named: "\(name)-\(label)", file: file, testName: testName, line: line
             )
         }
@@ -113,7 +118,7 @@ final class SnapshotTests: XCTestCase {
             ErrorStateView(message: "通信できませんでした", retryable: true) {}
         }
         .padding(16)
-        assertScreens(view, height: 820, named: "states")
+        assertScreens(view, height: 820, accessibilityHeight: 1800, named: "states")
     }
 
     // MARK: Live Activity

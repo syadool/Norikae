@@ -43,8 +43,13 @@ public struct RouteCompareView: View {
     private let catalog: Catalog
     private let onSelect: (Route.ID) -> Void
 
-    @ScaledMetric(relativeTo: .callout) private var headerHeight: CGFloat = NKCompareMetrics.headerCardSize
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .callout) private var scaledHeaderHeight: CGFloat = NKCompareMetrics.headerCardSize
     private let headerGap: CGFloat = 8
+
+    private var headerHeight: CGFloat {
+        NKCompareMetrics.headerHeight(scaled: scaledHeaderHeight, dynamicTypeSize: dynamicTypeSize)
+    }
 
     public init(columns: [CompareColumn], catalog: Catalog, onSelect: @escaping (Route.ID) -> Void) {
         self.columns = columns
@@ -66,6 +71,7 @@ public struct RouteCompareView: View {
 
                     HStack(alignment: .top, spacing: 0) {
                         CompareAxisLabels(ticks: metrics.tickPositions, width: gutter)
+                            .dynamicTypeSize(...NKCompareMetrics.axisMaxTypeSize)
                             .frame(width: gutter, height: bodyHeight)
                             .padding(.top, headerHeight + headerGap)
                             .accessibilityHidden(true)
@@ -78,11 +84,13 @@ public struct RouteCompareView: View {
                                     } label: {
                                         VStack(spacing: headerGap) {
                                             CompareHeaderCard(column: column)
+                                                .dynamicTypeSize(...NKCompareMetrics.headerMaxTypeSize)
                                                 .frame(width: columnWidth - 6, height: headerHeight)
                                             CompareColumnBody(
                                                 column: column, catalog: catalog, metrics: metrics,
                                                 width: columnWidth, height: bodyHeight, showsSeparator: index > 0
                                             )
+                                            .dynamicTypeSize(...NKCompareMetrics.bodyMaxTypeSize)
                                         }
                                         .frame(width: columnWidth)
                                         .contentShape(Rectangle())
@@ -178,21 +186,43 @@ struct CompareAxisLabels: View {
 }
 
 /// 列の要約（104×104、角丸 lg、内側の余白 8）
+///
+/// アクセシビリティサイズでは列の幅に 1 行で収まらないので、「出発→」「到着」、所要時間、乗換回数を 1 行ずつに分ける（design-spec 5.2）
 struct CompareHeaderCard: View {
     let column: CompareColumn
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
+        let stacked = dynamicTypeSize.isAccessibilitySize
         VStack(alignment: .leading, spacing: 3) {
             RouteBadgeRow(badges: column.badges, hasDisruption: column.route.hasServiceDisruption)
+                .dynamicTypeSize(...(stacked ? NKCompareMetrics.accessibilityBadgeMaxTypeSize : .accessibility5))
                 .frame(minHeight: 20, alignment: .leading)
-            Text("\(NKFormat.time(column.route.departureTime))→\(NKFormat.time(column.route.arrivalTime))", bundle: .module)
-                .font(.nkNumeric(.callout))
-                .foregroundStyle(NKColor.textPrimary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
-            HStack(spacing: 4) {
-                Text(NKFormat.duration(minutes: column.route.durationMinutes)).fontWeight(.bold)
-                Text(NKFormat.transfers(column.route.transferCount))
+            Group {
+                if stacked {
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text("\(NKFormat.time(column.route.departureTime))→", bundle: .module)
+                        Text(NKFormat.time(column.route.arrivalTime))
+                    }
+                } else {
+                    Text("\(NKFormat.time(column.route.departureTime))→\(NKFormat.time(column.route.arrivalTime))", bundle: .module)
+                }
+            }
+            .font(.nkNumeric(.callout))
+            .foregroundStyle(NKColor.textPrimary)
+            .lineLimit(1)
+            .minimumScaleFactor(0.6)
+            Group {
+                if stacked {
+                    Text(NKFormat.duration(minutes: column.route.durationMinutes)).fontWeight(.bold)
+                    Text(NKFormat.transfers(column.route.transferCount))
+                } else {
+                    HStack(spacing: 4) {
+                        Text(NKFormat.duration(minutes: column.route.durationMinutes)).fontWeight(.bold)
+                        Text(NKFormat.transfers(column.route.transferCount))
+                    }
+                }
             }
             .font(.caption)
             .foregroundStyle(NKColor.textSecondary)
@@ -221,11 +251,17 @@ struct CompareColumnBody: View {
     let showsSeparator: Bool
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    /// 発着のラベルどうしが重なる間隔。アクセシビリティサイズでは時刻の文字の高さに合わせて広げる
+    @ScaledMetric(relativeTo: .footnote) private var scaledLabelSpacing: CGFloat = 16
+    /// 時刻の横に駅名を出すのに最低限要る幅（駅名 1 文字分ほど）。これより狭いときは駅名を省く
+    @ScaledMetric(relativeTo: .caption2) private var minimumStationNameWidth: CGFloat = 16
 
     var body: some View {
+        let isAccessibilitySize = dynamicTypeSize.isAccessibilitySize
         let layout = CompareColumnLayout(
             route: column.route, axis: metrics.axis, pointsPerMinute: metrics.pointsPerMinute,
-            verticalPadding: metrics.padding, collapseDistance: NKCompareMetrics.labelCollapseDistance
+            verticalPadding: metrics.padding, collapseDistance: NKCompareMetrics.labelCollapseDistance,
+            minimumLabelSpacing: isAccessibilitySize ? scaledLabelSpacing : 16
         )
         let bandCenterX = NKCompareMetrics.bandLeading + NKCompareMetrics.bandWidth / 2
         let labelWidth = max(width - NKCompareMetrics.labelLeading - 4, 30)
@@ -261,7 +297,7 @@ struct CompareColumnBody: View {
 
             // 種別・行き先（チップと同じ高さ）
             ForEach(layout.bands, id: \.legIndex) { band in
-                if band.height >= 52 {
+                if band.height >= 52, !appearance(band).isLongLabel {
                     legLabel(band.leg)
                         .frame(width: labelWidth, alignment: .leading)
                         .position(x: labelCenterX, y: band.midY)
@@ -270,20 +306,50 @@ struct CompareColumnBody: View {
 
             // 路線記号チップ（帯の縦方向の中央。帯からはみ出してよい）
             ForEach(layout.bands, id: \.legIndex) { band in
-                LineSymbolChip(LineAppearance(line: catalog.line(band.leg.lineId), fallbackID: band.leg.lineId), size: .compare)
-                    .position(x: bandCenterX, y: band.midY)
+                let line = appearance(band)
+                if line.isLongLabel {
+                    // 路線名で代わりに表示するチップは幅が広く、横に置いた種別・行き先に重なる。
+                    // 列の左端から置き、種別・行き先はチップの右に入るときだけ出す
+                    Group {
+                        if band.height >= 52 {
+                            ViewThatFits(in: .horizontal) {
+                                HStack(spacing: 4) {
+                                    chip(line)
+                                    legLabel(band.leg)
+                                }
+                                chip(line)
+                            }
+                        } else {
+                            chip(line)
+                        }
+                    }
+                    .frame(width: width - 6, alignment: .leading)
+                    .position(x: 2 + (width - 6) / 2, y: band.midY)
+                } else {
+                    chip(line)
+                        .position(x: bandCenterX, y: band.midY)
+                }
             }
 
             // 発着の時刻と駅名
             ForEach(Array(layout.labels.enumerated()), id: \.offset) { _, label in
-                HStack(alignment: .firstTextBaseline, spacing: 3) {
-                    Text(NKFormat.time(label.time))
-                        .font(.nkNumeric(.footnote))
-                        .foregroundStyle(NKColor.textPrimary)
-                    if label.showsStationName {
-                        Text(catalog.station(label.stationId)?.name ?? "")
-                            .font(.caption2)
-                            .foregroundStyle(NKColor.textSecondary)
+                Group {
+                    // 大きい文字サイズでは駅名を省き、時刻だけにする（design-spec 5.2）
+                    if label.showsStationName, !isAccessibilitySize {
+                        // 時刻と駅名が列に入らないとき（XXXL など）は、時刻が「8:…」と切れないよう駅名を省く。
+                        // 駅名は理想の幅を最低限の幅にし、入るときは今までどおり駅名の後ろを「…」で切る
+                        ViewThatFits(in: .horizontal) {
+                            HStack(alignment: .firstTextBaseline, spacing: 3) {
+                                timeText(label)
+                                Text(catalog.station(label.stationId)?.name ?? "")
+                                    .font(.caption2)
+                                    .foregroundStyle(NKColor.textSecondary)
+                                    .frame(idealWidth: minimumStationNameWidth, alignment: .leading)
+                            }
+                            timeText(label)
+                        }
+                    } else {
+                        timeText(label)
                     }
                 }
                 .lineLimit(1)
@@ -293,6 +359,21 @@ struct CompareColumnBody: View {
             }
         }
         .frame(width: width, height: height, alignment: .topLeading)
+    }
+
+    private func timeText(_ label: CompareColumnLayout.TimeLabel) -> some View {
+        Text(NKFormat.time(label.time))
+            .font(.nkNumeric(.footnote))
+            .foregroundStyle(NKColor.textPrimary)
+    }
+
+    private func appearance(_ band: CompareColumnLayout.Band) -> LineAppearance {
+        LineAppearance(line: catalog.line(band.leg.lineId), fallbackID: band.leg.lineId)
+    }
+
+    private func chip(_ appearance: LineAppearance) -> some View {
+        LineSymbolChip(appearance, size: .compare)
+            .dynamicTypeSize(...(dynamicTypeSize.isAccessibilitySize ? NKCompareMetrics.accessibilityChipMaxTypeSize : .accessibility5))
     }
 
     @ViewBuilder
@@ -328,7 +409,12 @@ struct CompareColumnButtonStyle: ButtonStyle {
 
 /// 縦比較のスケルトン（FR-CMP-11）。同じ骨組みのまま、帯とラベルを灰色の角丸の四角にする
 public struct RouteCompareSkeleton: View {
-    @ScaledMetric(relativeTo: .callout) private var headerHeight: CGFloat = NKCompareMetrics.headerCardSize
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .callout) private var scaledHeaderHeight: CGFloat = NKCompareMetrics.headerCardSize
+
+    private var headerHeight: CGFloat {
+        NKCompareMetrics.headerHeight(scaled: scaledHeaderHeight, dynamicTypeSize: dynamicTypeSize)
+    }
 
     public init() {}
 
